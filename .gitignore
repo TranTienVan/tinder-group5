@@ -1,6 +1,9 @@
 *.pyc
-__pycache
+__pycache__
 .DS_Store
-.env.dev
-.env.prod
-.env.prod.db
+*.ipynb
+test
+
+# .env.dev
+# .env.prod
+# .env.prod.db
