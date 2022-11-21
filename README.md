@@ -22,12 +22,7 @@ Uses the default Django development server.
 
 ### Environments
 This Compose file contains the following environment variables:
-* `.env.dev`
-
-### Access to postgres: 
-* `localhost:5432`
-* **Username:** postgres (as a default)
-* **Password:** postgres (as a default)
+* `.env.dev-remote`
 
 ### Access to PgAdmin: 
 * **URL:** `http://localhost:5050`
@@ -35,11 +30,11 @@ This Compose file contains the following environment variables:
 * **Password:** admin (as a default)
 
 ### Add a new server in PgAdmin:
-* **Host name/address** `postgres`
+* **Host name/address** `db.cugjcyymaqbyyjikpixb.supabase.co`
 * **Port** `5432`
 * **Username** as `POSTGRES_USER`, by default: `postgres`
-* **Password** as `POSTGRES_PASSWORD`, by default `postgres`
-* **database** as `POSTGRES_DB`, by default `tinder-db`
+* **Password** as `POSTGRES_PASSWORD`, by default `vanhuylamtrongtuan`
+* **database** as `POSTGRES_DB`, by default `tinder-db-dev`
 
 ### Logging
 

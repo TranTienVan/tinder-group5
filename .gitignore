@@ -7,3 +7,4 @@ test
 # .env.dev
 # .env.prod
 # .env.prod.db
+db-preparation-test

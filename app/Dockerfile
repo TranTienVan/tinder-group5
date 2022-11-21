@@ -20,7 +20,7 @@ RUN dir -s
 # install dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-
+RUN chmod +x setup.sh
 
 # run entrypoint.sh
 CMD ["sh", "setup.sh"]

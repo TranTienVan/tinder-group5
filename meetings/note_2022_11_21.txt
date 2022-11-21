@@ -1,0 +1,49 @@
+1. Assignment
+Huy: 
+    login
+    register
+    forgot password
+Van: 
+    liked_profile
+    see who like you
+    like
+    nomatch
+
+    super_like
+    rewind
+    chat
+    video_call
+Trong: 
+    account_setup
+    xoa tai khoan
+    upgrade_to premium account
+    cai dat tim kiem
+
+
+2. Extra assignment:
+# Normal/Premium
+priority likes
+Top pick
+
+# Admin
+admin dashboard
+user manager
+user report
+
+
+3. Github branch
+# Create 3 branch to develop on Github
+van-develop
+huy-develop
+trong-develop
+
+
+4. 
+- Add/Remove objects/attributes in database if needed
+- Change Rest APIs if needed
+
+5. 
+- For temporary: Save all images, videos to data folder
+
+6. 
+- To test locally, use .env.dev-remote file to setup environment variables
