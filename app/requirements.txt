@@ -1,3 +1,8 @@
 Django
 gunicorn
 psycopg2-binary
+djangorestframework
+markdown
+django-filter
+dj-rest-auth
+dj-rest-auth[with_social]
