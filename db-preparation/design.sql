@@ -8,34 +8,34 @@ create table `school` (
     primary key (id)
 );
 
-create table `account`(
+create table account(
 	id int auto_increment,
     email VARCHAR(330),
-    `phone` varchar(12),
-    `first_name` varchar(1024),
-    `last_name` varchar(1024),
-    `password` VARCHAR(1024),
-    `is_premium` bool, /* 0 1 */
-    `is_admin` bool, /* 0 1 */
-    `is_active` bool,
-    `is_reported` bool,
-    `is_blocked` bool,
-    `created_at` datetime,
-    `updated_at` datetime,
-    `gender` bool,
-    `about_me` text,
-    `birthday` datetime,
-    `big_picture_url` varchar(1024),
-    `small_picture_url` varchar(1024),
-    `country` varchar(1024),
-    `city` varchar(1024),
-    `district` varchar(1024),
-    `street` varchar(1024),
-    `address` varchar(1024),
-    `school_id` int,
+     phone  varchar(12),
+     first_name  varchar(1024),
+     last_name  varchar(1024),
+     password  VARCHAR(1024),
+     is_premium  bool, /* 0 1 */
+     is_admin  bool, /* 0 1 */
+     is_active  bool,
+     is_reported  bool,
+     is_blocked  bool,
+     created_at  datetime,
+     updated_at  datetime,
+     gender  bool,
+     about_me  text,
+     birthday  datetime,
+     big_picture_url  varchar(1024),
+     small_picture_url  varchar(1024),
+     country  varchar(1024),
+     city  varchar(1024),
+     district  varchar(1024),
+     street  varchar(1024),
+     address  varchar(1024),
+     school_id  int,
     
     primary key (id),
-    foreign key (`school_id`) references `school`(id)
+    foreign key ( school_id ) references  school (id)
 );
 
 create table `notification` (
