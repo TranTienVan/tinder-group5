@@ -8,3 +8,5 @@ test
 # .env.prod
 # .env.prod.db
 db-preparation-test
+hello_world
+test
