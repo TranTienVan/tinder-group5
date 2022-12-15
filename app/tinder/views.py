@@ -5,16 +5,144 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.http.request import HttpRequest
-from .serializers import MembersSerializer, MembershipsSerializer, ReactionsSerializer, ConnectionsSerializer
-from .models import Memberships, Members, Reactions, Connections
+from .serializers import MembersSerializer, MembershipsSerializer, ReactionsSerializer, ConnectionsSerializer, MessagesSerializer
+from .models import Memberships, Members, Reactions, Connections, Messages
 from datetime import datetime
 from django.forms.models import model_to_dict
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.views import APIView
-
+from django.db.models import Q
 # like : 1
 # nomatch : 2
+# super_like : 3
+# block : 4
+
+
+class BlockAPI(APIView):
+    def post(self, request: HttpRequest):
+        """params
+        for AccountReaction
+        
+        receiver_id
+        reactor_id
+        icon_name
+        """
+        print(request)
+        reactor_id = request.GET.get("reactor_id", "")
+        receiver_id = request.GET.get("receiver_id", "")
+        type = 4
+        issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+        # print(account_reaction_data)
+        # account_reaction_data["created_at"] = datetime.now().strftime("%Y-%d-%m %H:%M:%S.%f")
+        # account_reaction_data["deleted_at"] = None
+        # print(account_reaction_data)
+        
+        print("Hello")
+        print({"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
+        reaction_serializer=ReactionsSerializer(data={"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
+        
+        
+        if reaction_serializer.is_valid():
+            print("Saved reactions")
+            response1 = reaction_serializer.save()
+            
+            response = {"reactions": reaction_serializer.data}
+            
+            return JsonResponse(response, content_type="application/json")   
+        
+        return JsonResponse("Invalid parameters for usersuperlike", safe=False) 
+
+    
+    def delete(self, request: HttpRequest, _reactor_id = 0, _receiver_id = 0):
+        reactions = Reactions.objects.get(reactor_id=_reactor_id, receiver_id=_receiver_id)
+        
+        reactions.delete()
+        
+        response = {"reactions": model_to_dict(reactions)}
+        
+        return JsonResponse(response)
+
+
+class ChatAPI(APIView):
+    def get(self, request: HttpRequest):
+        """params
+        user_id_1
+        user_id_2
+        page
+        """
+        
+        
+        
+        message_per_page = 20
+        user_id_1 = request.GET.get("user_id_1", "")
+        user_id_2 = request.GET.get("user_id_2", "")
+        page = int(request.GET.get("page", ""))
+        print(user_id_1, user_id_2, page)
+        
+        messages_1 = list(Messages.objects.filter(sender_id = user_id_1, recipient_id = user_id_2).values())
+        messages_2 = list(Messages.objects.filter(sender_id = user_id_2, recipient_id = user_id_1).values())
+        
+        
+        messages_1.extend(messages_2)
+        def sort_messages(x):
+            return x["send_date"]
+        
+        
+        messages = sorted(messages_1, key=sort_messages, reverse=True)
+        
+        
+        return JsonResponse(messages[page * message_per_page:page* message_per_page + message_per_page], content_type="application/json",safe=False)
+    
+    def post(self, request: HttpRequest):
+        """params
+        sender_id
+        recipient_id
+        message
+        """
+        
+        sender_id = request.GET.get("sender_id", "")
+        recipient_id = request.GET.get("recipient_id", "")
+        message = request.GET.get("message", "")
+        send_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        try:
+            sender_recipient = Connections.objects.get(user_id_1=sender_id, user_id_2=recipient_id)
+        except Exception as e:
+            
+            return JsonResponse(f'{sender_id} and {recipient_id} can\'t chat with the other.' + str(e), safe=False)
+        
+        try:
+            recipient_sender = Connections.objects.get(user_id_1=recipient_id, user_id_2=sender_id)
+        except Exception as e:
+            return JsonResponse(f'{sender_id} and {recipient_id} can\'t chat with the other.' + str(e), safe=False)
+        
+        data = {
+            "message": message,
+            "send_date": send_date,
+            "status": '1',
+            "recipient_id": recipient_id,
+            "sender_id": sender_id
+        }
+        print(data)
+        message_serializer = MessagesSerializer(data =data)
+        
+        if message_serializer.is_valid():
+            message_serializer.save()
+            
+            
+            return JsonResponse(message_serializer.data, content_type="application/json")   
+            
+        
+        return JsonResponse("Invalid parameters for chat", content_type="application/json",safe=False)
+    def delete(self, request: HttpRequest, message_id):
+        messages = Messages.objects.get(message_id=message_id)
+        
+        messages.delete()
+        
+        return JsonResponse(model_to_dict(messages))
+    
+    
 
 class SuperLikeAPI(APIView):
     def post(self, request: HttpRequest):
@@ -28,7 +156,7 @@ class SuperLikeAPI(APIView):
         print(request)
         reactor_id = request.GET.get("reactor_id", "")
         receiver_id = request.GET.get("receiver_id", "")
-        type = request.GET.get("type", "")
+        type = 3
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
         # account_reaction_data["created_at"] = datetime.now().strftime("%Y-%d-%m %H:%M:%S.%f")
@@ -54,7 +182,7 @@ class SuperLikeAPI(APIView):
             
             return JsonResponse(response, content_type="application/json")   
         
-        return JsonResponse("Invalid parameters for userlike", safe=False) 
+        return JsonResponse("Invalid parameters for usersuperlike", safe=False) 
         pass
     
     
@@ -86,7 +214,7 @@ class NoMatchAPI(APIView):
         print(request)
         reactor_id = request.GET.get("reactor_id", "")
         receiver_id = request.GET.get("receiver_id", "")
-        type = request.GET.get("type", "")
+        type = 2
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
         # account_reaction_data["created_at"] = datetime.now().strftime("%Y-%d-%m %H:%M:%S.%f")
@@ -104,7 +232,7 @@ class NoMatchAPI(APIView):
             
             return JsonResponse(reaction_serializer.data, content_type="application/json")   
         
-        return JsonResponse("Invalid parameters for userlike", safe=False) 
+        return JsonResponse("Invalid parameters for nomatch", safe=False) 
     
     
     def delete(self, request: HttpRequest, _reactor_id = 0, _receiver_id = 0):
@@ -137,12 +265,12 @@ class MembersLikedAPI(APIView):
         
         receiver_id
         reactor_id
-        icon_name
+        type
         """
         print(request)
         reactor_id = request.GET.get("reactor_id", "")
         receiver_id = request.GET.get("receiver_id", "")
-        type = request.GET.get("type", "")
+        type = 1
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
         # account_reaction_data["created_at"] = datetime.now().strftime("%Y-%d-%m %H:%M:%S.%f")
@@ -172,3 +300,7 @@ class MembersLikedAPI(APIView):
         reactions.delete()
         
         return JsonResponse(model_to_dict(reactions))
+    
+    
+    
+    

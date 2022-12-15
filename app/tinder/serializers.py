@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tinder.models import Members, Memberships, Reactions, Connections
+from tinder.models import Members, Memberships, Reactions, Connections, Messages
 
 class MembershipsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -61,4 +61,17 @@ class ConnectionsSerializer(serializers.ModelSerializer):
             "created_date"
         )
     
-    
+
+class MessagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Messages
+        fields = (
+            "message",
+            "send_date",
+            "status",
+            "recipient_id",
+            "sender_id"
+        )
+
+
+
