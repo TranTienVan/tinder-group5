@@ -1,14 +1,14 @@
 from rest_framework import serializers
-from .models import User
+from .models import MyUser
 
-class UserSerializer(serializers.ModelSerializer):
+class MyUserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['id', 'name', 'email', 'password']
+        model = MyUser
+        fields = ['id', 'email', 'password']
 
     # hide password
         extra_kwargs = {
-            'password': {'write_only':True}
+            'password': {'write_only': True}
         }
 
 
@@ -19,6 +19,6 @@ class UserSerializer(serializers.ModelSerializer):
         instance = self.Meta.model(**validated_data) #doesnt include password
 
         if password is not None:
-            instance.set_password(password) #hashes password
+            instance.set_password(password) # hashes password
         instance.save()
         return instance

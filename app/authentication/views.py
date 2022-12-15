@@ -2,22 +2,21 @@ from django.shortcuts import render
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserSerializer
-from .models import User
+from .serializers import MyUserSerializer
+from .models import MyUser
 from rest_framework.exceptions import AuthenticationFailed
-
+from .handlers import JWTHandler
 import jwt
-import datetime
+import os 
 
-# Create your views here.
+JWT_COOKIE = os.environ.get("JWT_COOKIE")
 
 class registerAPIView(APIView):
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)   #if anything not valid, raise exception
+        serializer = MyUserSerializer(data = request.data)
+        serializer.is_valid(raise_exception = True)   #if anything not valid, raise exception
         serializer.save()
         return Response(serializer.data)
-
 
 class LoginAPIView(APIView):
     def post(self, request):
@@ -25,7 +24,7 @@ class LoginAPIView(APIView):
         password = request.data['password']
 
         #find user using email
-        user = User.objects.filter(email=email).first()
+        user = MyUser.objects.filter(email = email).first()
 
         if user is None:
             raise AuthenticationFailed('User not found:)')
@@ -33,25 +32,15 @@ class LoginAPIView(APIView):
         if not user.check_password(password):
             raise AuthenticationFailed('Invalid password')
 
-       
-        payload = {
-            "id": user.id,
-            "email": user.email,
-            "exp": datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            "iat": datetime.datetime.utcnow()
-        }
-
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
-        # token.decode('utf-8')
-        #we set token via cookies
         
+        token = JWTHandler.generate_token(user)
 
         response = Response() 
 
-        response.set_cookie(key='jwt', value=token, httponly=True)  #httonly - frontend can't access cookie, only for backend
+        response.set_cookie(key = JWT_COOKIE, value = token, httponly = True)  # httonly - frontend can't access cookie, only for backend
 
         response.data = {
-            'jwt token': token
+            JWT_COOKIE: token
         }
 
         #if password correct
@@ -61,20 +50,20 @@ class LoginAPIView(APIView):
 # get user using cookie
 class UserView(APIView):
     def get(self, request):
-        token = request.COOKIES.get('jwt')
+        token = request.COOKIES.get(JWT_COOKIE)
 
         if not token:
             raise AuthenticationFailed("Unauthenticated!")
         
         try:
-            payload = jwt.decode(token, 'secret', algorithms="HS256")
+            id = JWTHandler.verify_token(token)
             #decode gets the user
 
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed("Unauthenticated!")
         
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
+        user = MyUser.objects.filter(id = id).first()
+        serializer = MyUserSerializer(user)
 
         return Response(serializer.data)
         #cookies accessed if preserved
@@ -82,7 +71,7 @@ class UserView(APIView):
 class LogoutView(APIView):
     def post(self, request):
         response = Response()
-        response.delete_cookie('jwt')
+        response.delete_cookie(JWT_COOKIE)
         response.data = {
             'message': 'successful'
         }
