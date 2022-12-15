@@ -3,7 +3,6 @@ __pycache__
 .DS_Store
 *.ipynb
 test
-
 # .env.dev
 # .env.prod
 # .env.prod.db
