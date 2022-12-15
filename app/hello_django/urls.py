@@ -4,10 +4,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView, TemplateView
 
+
+
 urlpatterns = [
     path("hello_world/", include("hello_world.urls")),
     path("admin/", admin.site.urls),
     path('', include('authentication.urls'))
+    path("api/", include("tinder.urls"))
 ]
 
 if bool(settings.DEBUG):

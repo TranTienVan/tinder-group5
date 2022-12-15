@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     #app
     "authentication",
     "hello_world",
+    "tinder"
 ]
 
 MIDDLEWARE = [
