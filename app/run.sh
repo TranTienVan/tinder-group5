@@ -1,6 +1,10 @@
 python manage.py flush --no-input
 
-python manage.py makemigrations
+python manage.py makemigrations authentication
+
+python manage.py makemigrations hello_world
+ 
+python manage.py makemigrations tinder
 
 python manage.py migrate
 

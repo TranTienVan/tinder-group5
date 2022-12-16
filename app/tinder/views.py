@@ -42,6 +42,8 @@ class BlockAPI(APIView):
         print({"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
         reaction_serializer=ReactionsSerializer(data={"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
         
+        # Add authenticate here
+        
         
         if reaction_serializer.is_valid():
             print("Saved reactions")
@@ -55,6 +57,9 @@ class BlockAPI(APIView):
 
     
     def delete(self, request: HttpRequest, _reactor_id = 0, _receiver_id = 0):
+        # Add authenticate here
+        
+        
         reactions = Reactions.objects.get(reactor_id=_reactor_id, receiver_id=_receiver_id)
         
         reactions.delete()
@@ -71,7 +76,7 @@ class ChatAPI(APIView):
         user_id_2
         page
         """
-        
+        # Add authenticate here
         
         
         message_per_page = 20
@@ -100,6 +105,8 @@ class ChatAPI(APIView):
         recipient_id
         message
         """
+        # Add authenticate here
+        
         
         sender_id = request.GET.get("sender_id", "")
         recipient_id = request.GET.get("recipient_id", "")
@@ -136,6 +143,9 @@ class ChatAPI(APIView):
         
         return JsonResponse("Invalid parameters for chat", content_type="application/json",safe=False)
     def delete(self, request: HttpRequest, message_id):
+        # Add authenticate here
+        
+        
         messages = Messages.objects.get(message_id=message_id)
         
         messages.delete()
@@ -153,6 +163,10 @@ class SuperLikeAPI(APIView):
         reactor_id
         icon_name
         """
+        # Add authenticate here
+        
+        
+        
         print(request)
         reactor_id = request.GET.get("reactor_id", "")
         receiver_id = request.GET.get("receiver_id", "")
@@ -211,6 +225,10 @@ class NoMatchAPI(APIView):
         reactor_id
         icon_name
         """
+        # Add authenticate here
+        
+        
+        
         print(request)
         reactor_id = request.GET.get("reactor_id", "")
         receiver_id = request.GET.get("receiver_id", "")
@@ -236,6 +254,10 @@ class NoMatchAPI(APIView):
     
     
     def delete(self, request: HttpRequest, _reactor_id = 0, _receiver_id = 0):
+        # Add authenticate here
+        
+        
+        
         reactions = Reactions.objects.get(reactor_id=_reactor_id, receiver_id=_receiver_id)
         
         reactions.delete()
@@ -245,6 +267,9 @@ class NoMatchAPI(APIView):
 
 class LikedMembersAPI(APIView):
     def get(self, request: HttpRequest, _receiver_id=0):
+        # Add authenticate here
+        
+        
         
         reactions = Reactions.objects.filter(receiver_id= _receiver_id, type=1).values()
         print(reactions)
@@ -254,6 +279,9 @@ class LikedMembersAPI(APIView):
 
 class MembersLikedAPI(APIView):
     def get(self, request: HttpRequest, _reactor_id=0):
+        # Add authenticate here
+        
+        
         reactions = Reactions.objects.filter(reactor_id= _reactor_id, type=1).values()
         print(reactions)
         return JsonResponse([entry for entry in reactions], safe=False)
@@ -267,6 +295,9 @@ class MembersLikedAPI(APIView):
         reactor_id
         type
         """
+        # Add authenticate here
+        
+        
         print(request)
         reactor_id = request.GET.get("reactor_id", "")
         receiver_id = request.GET.get("receiver_id", "")
@@ -293,7 +324,8 @@ class MembersLikedAPI(APIView):
         return JsonResponse("Invalid parameters for userlike", safe=False) 
     
     def delete(self, request: HttpRequest, _reactor_id=0, _receiver_id = 0):
-        
+        # Add authenticate here
+            
         
         reactions = Reactions.objects.get(reactor_id=_reactor_id, receiver_id=_receiver_id)
         
