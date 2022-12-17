@@ -21,13 +21,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+# SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = "foo"
 
-DEBUG = int(os.environ.get("DEBUG", default=0))
+# DEBUG = int(os.environ.get("DEBUG", default=0))
+DEBUG = 1
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = "localhost 127.0.0.1 [::1]".split(" ")
 
 
 # Application definition
@@ -86,12 +89,19 @@ WSGI_APPLICATION = 'hello_django.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get("SQL_ENGINE"),
-        "NAME": os.environ.get("SQL_DATABASE"),
-        "USER": os.environ.get("SQL_USER"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD"),
-        "HOST": os.environ.get("SQL_HOST"),
-        "PORT": os.environ.get("SQL_PORT")
+        # "ENGINE": os.environ.get("SQL_ENGINE"),
+        # "NAME": os.environ.get("SQL_DATABASE"),
+        # "USER": os.environ.get("SQL_USER"),
+        # "PASSWORD": os.environ.get("SQL_PASSWORD"),
+        # "HOST": os.environ.get("SQL_HOST"),
+        # "PORT": os.environ.get("SQL_PORT")
+        "ENGINE": 'django.db.backends.postgresql',
+        "NAME": 'trong-db-dev-test',
+        "USER": "postgres",
+        "PASSWORD":'vanhuylamtrongtuan',
+        "HOST":'db.cugjcyymaqbyyjikpixb.supabase.co',
+        "PORT":5432,
+
     }
 }
 
