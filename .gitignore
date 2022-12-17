@@ -9,6 +9,6 @@ test
 db-preparation-test
 hello_world
 test
-app/authentication/migrations
-app/hello_world/migrations
-app/tinder/migrations
+app/authentication/migrations/*
+app/hello_world/migrations/*
+app/tinder/migrations/*
