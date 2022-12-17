@@ -1,4 +1,4 @@
-python manage.py flush --no-input
+python manage.py flush --noinput
 
 python manage.py makemigrations authentication
 

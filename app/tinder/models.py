@@ -3,6 +3,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 from django.db import models
+from enum import IntEnum
 
 
 
@@ -39,7 +40,12 @@ class Members(models.Model):
     account_status = models.IntegerField(null=True)
     
     group_id = models.ForeignKey(Memberships, on_delete=models.CASCADE, null=False)
-    
+
+class ReactionType(IntEnum):
+    LIKE: 1
+    NO_MATCH: 2
+    SUPER_LIKE: 3
+    BLOCK: 4
 
 # Create your models here.
 class Reactions(models.Model):    

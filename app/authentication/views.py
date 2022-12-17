@@ -50,23 +50,12 @@ class LoginAPIView(APIView):
 # get user using cookie
 class UserView(APIView):
     def get(self, request):
-        token = request.COOKIES.get(JWT_COOKIE)
-
-        if not token:
-            raise AuthenticationFailed("Unauthenticated!")
-        
-        try:
-            id = JWTHandler.verify_token(token)
-            #decode gets the user
-
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Unauthenticated!")
+        id = JWTHandler.get_current_user(request.COOKIES)
         
         user = MyUser.objects.filter(id = id).first()
         serializer = MyUserSerializer(user)
 
         return Response(serializer.data)
-        #cookies accessed if preserved
 
 class LogoutView(APIView):
     def post(self, request):

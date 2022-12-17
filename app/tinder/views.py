@@ -6,18 +6,18 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.http.request import HttpRequest
 from .serializers import MembersSerializer, MembershipsSerializer, ReactionsSerializer, ConnectionsSerializer, MessagesSerializer
-from .models import Memberships, Members, Reactions, Connections, Messages
+from .models import Memberships, Members, Reactions, Connections, Messages, ReactionType
 from datetime import datetime
 from django.forms.models import model_to_dict
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.views import APIView
 from django.db.models import Q
+from authentication.handlers import JWTHandler
 # like : 1
 # nomatch : 2
 # super_like : 3
 # block : 4
-
 
 class BlockAPI(APIView):
     def post(self, request: HttpRequest):
@@ -29,9 +29,9 @@ class BlockAPI(APIView):
         icon_name
         """
         print(request)
-        reactor_id = request.GET.get("reactor_id", "")
+        reactor_id = JWTHandler.get_current_user(request.COOKIES)
         receiver_id = request.GET.get("receiver_id", "")
-        type = 4
+        type = ReactionType.BLOCK
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
         # account_reaction_data["created_at"] = datetime.now().strftime("%Y-%d-%m %H:%M:%S.%f")
@@ -41,9 +41,6 @@ class BlockAPI(APIView):
         print("Hello")
         print({"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
         reaction_serializer=ReactionsSerializer(data={"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
-        
-        # Add authenticate here
-        
         
         if reaction_serializer.is_valid():
             print("Saved reactions")
@@ -57,10 +54,9 @@ class BlockAPI(APIView):
 
     
     def delete(self, request: HttpRequest, _reactor_id = 0, _receiver_id = 0):
-        # Add authenticate here
+        reactor_id = JWTHandler.get_current_user(request.COOKIES)        
         
-        
-        reactions = Reactions.objects.get(reactor_id=_reactor_id, receiver_id=_receiver_id)
+        reactions = Reactions.objects.get(reactor_id=reactor_id, receiver_id=_receiver_id)
         
         reactions.delete()
         
@@ -76,11 +72,9 @@ class ChatAPI(APIView):
         user_id_2
         page
         """
-        # Add authenticate here
-        
-        
+
         message_per_page = 20
-        user_id_1 = request.GET.get("user_id_1", "")
+        user_id_1 = JWTHandler.get_current_user(request.COOKIES)
         user_id_2 = request.GET.get("user_id_2", "")
         page = int(request.GET.get("page", ""))
         print(user_id_1, user_id_2, page)
@@ -105,10 +99,8 @@ class ChatAPI(APIView):
         recipient_id
         message
         """
-        # Add authenticate here
         
-        
-        sender_id = request.GET.get("sender_id", "")
+        sender_id = JWTHandler.get_current_user(request.COOKIES) 
         recipient_id = request.GET.get("recipient_id", "")
         message = request.GET.get("message", "")
         send_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -143,11 +135,10 @@ class ChatAPI(APIView):
         
         return JsonResponse("Invalid parameters for chat", content_type="application/json",safe=False)
     def delete(self, request: HttpRequest, message_id):
-        # Add authenticate here
-        
-        
-        messages = Messages.objects.get(message_id=message_id)
-        
+        sender_id = JWTHandler.get_current_user(request.COOKIES) 
+                
+        messages = Messages.objects.get(message_id=message_id, sender_id = sender_id)
+
         messages.delete()
         
         return JsonResponse(model_to_dict(messages))
@@ -163,14 +154,11 @@ class SuperLikeAPI(APIView):
         reactor_id
         icon_name
         """
-        # Add authenticate here
-        
-        
-        
+     
         print(request)
-        reactor_id = request.GET.get("reactor_id", "")
+        reactor_id = JWTHandler.get_current_user(request.COOKIES) 
         receiver_id = request.GET.get("receiver_id", "")
-        type = 3
+        type = ReactionType.SUPER_LIKE
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
         # account_reaction_data["created_at"] = datetime.now().strftime("%Y-%d-%m %H:%M:%S.%f")
@@ -201,8 +189,9 @@ class SuperLikeAPI(APIView):
     
     
     def delete(self, request: HttpRequest, _reactor_id = 0, _receiver_id = 0):
-        reactions = Reactions.objects.get(reactor_id=_reactor_id, receiver_id=_receiver_id)
-        connections = Connections.objects.get(user_id_1 = _reactor_id, user_id_2 = _receiver_id)
+        rector_id = JWTHandler.get_current_user(request.COOKIES) 
+        reactions = Reactions.objects.get(reactor_id = rector_id, receiver_id=_receiver_id)
+        connections = Connections.objects.get(user_id_1 = rector_id, user_id_2 = _receiver_id)
         
         
         reactions.delete()
@@ -224,15 +213,12 @@ class NoMatchAPI(APIView):
         receiver_id
         reactor_id
         icon_name
-        """
-        # Add authenticate here
-        
-        
+        """   
         
         print(request)
-        reactor_id = request.GET.get("reactor_id", "")
+        reactor_id = JWTHandler.get_current_user(request.COOKIES) 
         receiver_id = request.GET.get("receiver_id", "")
-        type = 2
+        type = ReactionType.NO_MATCH
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
         # account_reaction_data["created_at"] = datetime.now().strftime("%Y-%d-%m %H:%M:%S.%f")
@@ -254,11 +240,9 @@ class NoMatchAPI(APIView):
     
     
     def delete(self, request: HttpRequest, _reactor_id = 0, _receiver_id = 0):
-        # Add authenticate here
+        reactor_id = JWTHandler.get_current_user(request.COOKIES) 
         
-        
-        
-        reactions = Reactions.objects.get(reactor_id=_reactor_id, receiver_id=_receiver_id)
+        reactions = Reactions.objects.get(reactor_id=reactor_id, receiver_id=_receiver_id)
         
         reactions.delete()
         
@@ -266,12 +250,9 @@ class NoMatchAPI(APIView):
 
 
 class LikedMembersAPI(APIView):
-    def get(self, request: HttpRequest, _receiver_id=0):
-        # Add authenticate here
-        
-        
-        
-        reactions = Reactions.objects.filter(receiver_id= _receiver_id, type=1).values()
+    def get(self, request: HttpRequest, _receiver_id=0): 
+        receiver_id = JWTHandler.get_current_user(request.COOKIES) 
+        reactions = Reactions.objects.filter(receiver_id=receiver_id, type=ReactionType.LIKE).values()
         print(reactions)
         
         return JsonResponse([entry for entry in reactions], safe=False)
@@ -279,11 +260,10 @@ class LikedMembersAPI(APIView):
 
 class MembersLikedAPI(APIView):
     def get(self, request: HttpRequest, _reactor_id=0):
-        # Add authenticate here
-        
-        
-        reactions = Reactions.objects.filter(reactor_id= _reactor_id, type=1).values()
+        reactor_id = JWTHandler.get_current_user(request.COOKIES) 
+        reactions = Reactions.objects.filter(reactor_id= reactor_id, type=ReactionType.LIKE).values()
         print(reactions)
+
         return JsonResponse([entry for entry in reactions], safe=False)
     
     
@@ -295,13 +275,11 @@ class MembersLikedAPI(APIView):
         reactor_id
         type
         """
-        # Add authenticate here
-        
         
         print(request)
-        reactor_id = request.GET.get("reactor_id", "")
+        reactor_id = JWTHandler.get_current_user(request.COOKIES) 
         receiver_id = request.GET.get("receiver_id", "")
-        type = 1
+        type = ReactionType.LIKE
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
         # account_reaction_data["created_at"] = datetime.now().strftime("%Y-%d-%m %H:%M:%S.%f")
@@ -324,10 +302,10 @@ class MembersLikedAPI(APIView):
         return JsonResponse("Invalid parameters for userlike", safe=False) 
     
     def delete(self, request: HttpRequest, _reactor_id=0, _receiver_id = 0):
-        # Add authenticate here
+        reactor_id = JWTHandler.get_current_user(request.COOKIES) 
             
         
-        reactions = Reactions.objects.get(reactor_id=_reactor_id, receiver_id=_receiver_id)
+        reactions = Reactions.objects.get(reactor_id=reactor_id, receiver_id=_receiver_id)
         
         reactions.delete()
         
