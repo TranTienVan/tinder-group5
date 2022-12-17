@@ -17,8 +17,9 @@ def hello_world(request):
 
 
 class MembersInforAPI(APIView):
-    def get(self, request, id):
+    def get(self, request):
         try: 
+            id =  JWTHandler.get_current_user(request.COOKIES) 
             user_info, created = MembersInfo.objects.get_or_create(user_id = id)
             serializer_context = {
                  'request': request,
@@ -32,12 +33,11 @@ class MembersInforAPI(APIView):
         except IntegrityError:
             return HttpResponseNotFound(f"User With ID:{id} Does Not Exist!")
 
-    def put(self, request, id):
+    def put(self, request):
         try: 
             
             
-           
-           
+            id =  JWTHandler.get_current_user(request.COOKIES) 
             user = Members.objects.get(user_id=id)
             if(request.POST.get('user_name') is not None):
                 user.user_name = request.POST.get('user_name') 
@@ -72,9 +72,9 @@ class MembersInforAPI(APIView):
             return HttpResponseNotFound(f"User With ID:{id}Does Not Exist!")
        
 
-    def delete(self,request, id):
+    def delete(self,request):
         try:  
-            print(Members.objects.all())
+            id =  JWTHandler.get_current_user(request.COOKIES) 
             user= Members.objects.get(user_id = id)
             
             user.delete()
@@ -84,9 +84,11 @@ class MembersInforAPI(APIView):
             return HttpResponseNotFound(f"User With ID:{id} Does Not Exist!")
 
 class MembersSettingsAPI(APIView):
-    def get(self, request, user_id):
+    def get(self, request):
         try: 
-            user_setting, created = MembersSettings.objects.get_or_create(user_id = user_id)
+            id =  JWTHandler.get_current_user(request.COOKIES) 
+
+            user_setting, created = MembersSettings.objects.get_or_create(user_id = id)
 
             serializer_context = {
            'request': request,
@@ -98,12 +100,12 @@ class MembersSettingsAPI(APIView):
                 print(serializer.errors)
                 return HttpResponse(serializer.errors)
         except IntegrityError:
-            return HttpResponseNotFound(f"User With ID:{user_id} Does Not Exist!")
+            return HttpResponseNotFound(f"User With ID:{id} Does Not Exist!")
 
-    def put(self, request, user_id):
+    def put(self, request):
         try: 
-
-            user_setting, created = MembersSettings.objects.get_or_create(user_id = user_id)
+            id =  JWTHandler.get_current_user(request.COOKIES)
+            user_setting, created = MembersSettings.objects.get_or_create(user_id = id)
             user_setting.search_locations = request.POST.get('search_locations')
             user_setting.max_range = request.POST.get('max_range')
             user_setting.min_match_age = request.POST.get('min_match_age')
@@ -121,4 +123,4 @@ class MembersSettingsAPI(APIView):
                 print(serializer.errors)
                 return HttpResponse(serializer.errors)
         except IntegrityError:
-            return HttpResponseNotFound(f"User With ID:{user_id} Does Not Exist!")
+            return HttpResponseNotFound(f"User With ID:{id} Does Not Exist!")
