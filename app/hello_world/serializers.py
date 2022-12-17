@@ -1,22 +1,19 @@
 from rest_framework import serializers
 
-from .models import Profile
+from .models import  MembersInfo, MembersSettings
 
-class ProfileSerializer(serializers.ModelSerializer):
-    # get_username= serializers.Field()
-    # get_big_picture= serializers.Field()
-    # get_small_picture = serializers.Field()
-
+class MembersInfoSerializer(serializers.ModelSerializer):
+    user_name = serializers.SerializerMethodField()
     class Meta:
-        model = Profile
-        fields = (
-            "get_username",
-            "phone",
-            "gender",
-            "is_premium",
-            "about_me",
-            "birthday",
-            "address",
-            "get_big_picture",
-            "get_small_picture"
-        )
+        model = MembersInfo
+        fields = '__all__'
+        extra_kwargs = {'user': {'required': False}}
+    
+    def get_user_name(self, obj):
+        return obj.user.user_name
+
+class MembersSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MembersSettings
+        fields = '__all__'
+        extra_kwargs = {'user': {'required': False}}

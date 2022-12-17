@@ -14,10 +14,10 @@ Van:
     chat
     video_call
 Trong: 
-    account_setup
-    xoa tai khoan
-    upgrade_to premium account
-    cai dat tim kiem
+    account_setup DONE
+    xoa tai khoan DONE
+    upgrade_to premium account NOT
+    cai dat tim kiem DONE
 
 
 2. Extra assignment:
