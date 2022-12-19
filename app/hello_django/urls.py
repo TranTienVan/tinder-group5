@@ -7,10 +7,10 @@ from django.views.generic import RedirectView, TemplateView
 
 
 urlpatterns = [
-    path("hello_world/", include("hello_world.urls")),
-    path("admin/", admin.site.urls),
+    # path("admin/", admin.site.urls),
     path('', include('authentication.urls')),
-    path("api/", include("tinder.urls"))
+    path("api/", include("tinder.urls")),
+    path("api/", include("tinder_profile.urls"))
 ]
 
 if bool(settings.DEBUG):

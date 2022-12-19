@@ -4,7 +4,10 @@ from PIL import Image
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.files import File
+from django.conf import settings
 
+
+User = settings.AUTH_USER_MODEL
 
 # Create your models here.
 
@@ -67,14 +70,23 @@ class Profile(models.Model):
 
 
 
+class Memberships(models.Model):
+    group_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=500,null=True)
+    description = models.TextField(null=True)
+    permissions = models.TextField(null=True)
+    price= models.IntegerField(null=True)
+    duration = models.IntegerField(null=True)
+    enable = models.IntegerField(null=True)
 
+    
+    
 class Members(models.Model):
     user_id =models.AutoField(primary_key=True)
     email = models.CharField(max_length=1024, blank=True, null=False)
     phone = models.CharField(max_length=12, blank=True, null=True)
     password = models.CharField(max_length=1024, blank=True, null = False)
     user_name = models.CharField(max_length = 1024, blank=True, null = False)
-    group_id = models.IntegerField(blank=True, null= False)
     membership_date = models.DateTimeField(auto_now=True)
     user_status = models.IntegerField(blank=True, null=False)
     join_date = models.DateField(blank=True, null=True)
@@ -83,6 +95,7 @@ class Members(models.Model):
     approved_profile = models.IntegerField(null=True, blank=True)
     account_status = models.IntegerField(null=True, blank=True)
 
+    group_id = models.ForeignKey(Memberships, on_delete=models.CASCADE, null=False)
 
 
 

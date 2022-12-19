@@ -5,42 +5,9 @@ from django.contrib.auth.models import User
 from django.db import models
 from enum import IntEnum
 
+from tinder_profile.models import Members
 
-
-
-
-
-class Memberships(models.Model):
-    group_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=500,null=True)
-    description = models.TextField(null=True)
-    permissions = models.TextField(null=True)
-    price= models.IntegerField(null=True)
-    duration = models.IntegerField(null=True)
-    enable = models.IntegerField(null=True)
     
-
-class Members(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    email = models.CharField(max_length=1024)
-    phone = models.CharField(max_length=1024)
-    password = models.CharField(max_length=1024)
-    first_name = models.CharField(max_length=1024, null=True)
-    last_name = models.CharField(max_length=1024, null=True)
-    birth_date = models.DateField(null=True)
-    about_me = models.TextField(null=True)
-    gender = models.IntegerField(null=True)
-    membership_date = models.DateTimeField(null=True)
-    user_status = models.IntegerField(null=True)
-    join_date = models.DateTimeField(null=True)
-    last_activity = models.DateTimeField(null=True)
-    last_edit = models.DateTimeField(null=True)
-    avatar_url = models.CharField(max_length=1024, null=True)
-    approved_profile = models.IntegerField(null=True)
-    account_status = models.IntegerField(null=True)
-    
-    group_id = models.ForeignKey(Memberships, on_delete=models.CASCADE, null=False)
-
 class ReactionType(IntEnum):
     LIKE: 1
     NO_MATCH: 2

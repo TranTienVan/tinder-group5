@@ -1,1 +1,1 @@
-sh run.sh
+python manage.py flush --no-input & python manage.py makemigrations authentication && python manage.py makemigrations tinder_profile && python manage.py makemigrations tinder && python manage.py migrate authentication && python manage.py migrate tinder_profile && python manage.py migrate tinder && python manage.py runserver 0.0.0.0:8000

@@ -2,18 +2,17 @@ from django.shortcuts import render
 from django.contrib.auth import logout 
 from rest_framework.request import Request
 from django.http import HttpResponse, HttpResponseNotFound
-from hello_world.models import  Members, MembersInfo, MembersSettings
+from .models import  Members, MembersInfo, MembersSettings
 from .serializers import  MembersInfoSerializer, MembersSettingsSerializer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from django.db import IntegrityError
+from authentication.handlers import JWTHandler
+
+
 def hello_world(request):
     return HttpResponse("<h1>Hello world</h1>")
-
-
-
-    
 
 
 class MembersInforAPI(APIView):

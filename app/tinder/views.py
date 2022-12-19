@@ -5,8 +5,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.http.request import HttpRequest
-from .serializers import MembersSerializer, MembershipsSerializer, ReactionsSerializer, ConnectionsSerializer, MessagesSerializer
-from .models import Memberships, Members, Reactions, Connections, Messages, ReactionType
+from .serializers import ReactionsSerializer, ConnectionsSerializer, MessagesSerializer
+from .models import Reactions, Connections, Messages, ReactionType
 from datetime import datetime
 from django.forms.models import model_to_dict
 import json
