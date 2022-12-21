@@ -21,29 +21,36 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# SECRET_KEY = os.environ.get("SECRET_KEY")
-SECRET_KEY = "foo"
+SECRET_KEY = os.environ.get("SECRET_KEY")
+# SECRET_KEY = "foo"
 
-# DEBUG = int(os.environ.get("DEBUG", default=0))
-DEBUG = 1
+DEBUG = int(os.environ.get("DEBUG", default=0))
+# DEBUG = 1
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
-ALLOWED_HOSTS = "localhost 127.0.0.1 [::1]".split(" ")
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+# ALLOWED_HOSTS = "localhost 127.0.0.1 [::1]".split(" ")
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "hello_world",
+    #library
+    "rest_framework",
+
+    #default
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'rest_framework'
+
+    #app
+    "authentication",
+    "tinder",
+    "tinder_profile"
 ]
 
 MIDDLEWARE = [
@@ -61,7 +68,7 @@ ROOT_URLCONF = 'hello_django.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,19 +89,18 @@ WSGI_APPLICATION = 'hello_django.wsgi.application'
 
 DATABASES = {
     "default": {
-        # "ENGINE": os.environ.get("SQL_ENGINE"),
-        # "NAME": os.environ.get("SQL_DATABASE"),
-        # "USER": os.environ.get("SQL_USER"),
-        # "PASSWORD": os.environ.get("SQL_PASSWORD"),
-        # "HOST": os.environ.get("SQL_HOST"),
-        # "PORT": os.environ.get("SQL_PORT")
-        "ENGINE": 'django.db.backends.postgresql',
-        "NAME": 'trong-db-dev-test',
-        "USER": "postgres",
-        "PASSWORD":'vanhuylamtrongtuan',
-        "HOST":'db.cugjcyymaqbyyjikpixb.supabase.co',
-        "PORT":5432,
-
+        "ENGINE": os.environ.get("SQL_ENGINE"),
+        "NAME": os.environ.get("SQL_DATABASE"),
+        "USER": os.environ.get("SQL_USER"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD"),
+        "HOST": os.environ.get("SQL_HOST"),
+        "PORT": os.environ.get("SQL_PORT")
+        # "ENGINE": 'django.db.backends.postgresql',
+        # "NAME": 'trong-db-dev-test',
+        # "USER": "postgres",
+        # "PASSWORD":'vanhuylamtrongtuan',
+        # "HOST":'db.cugjcyymaqbyyjikpixb.supabase.co',
+        # "PORT":5432,
     }
 }
 
@@ -146,3 +152,5 @@ MEDIA_ROOT = BASE_DIR / "mediafiles"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'authentication.MyUser'

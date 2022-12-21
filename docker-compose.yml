@@ -50,6 +50,14 @@ services:
       - tinder-group5
     restart: unless-stopped
 
+  stripe-cli:
+      image: stripe/stripe-cli
+      container_name: stripe-cli
+      command: listen --forward-to "localhost:8000/api/webhook"
+      environment:
+        - STRIPE_API_KEY=sk_test_51ME8c4CPnC0jXuRWQSNAY97FpbvuTuX4QU9B95NoRv8u8NDnXacgkAfPxMV0ixsgLII9tffKnRH7VrLqLHdsYacM00ywSZzHOd
+        - STRIPE_DEVICE_NAME=WannaDate
+      network_mode: host
 volumes:
   postgres_data:
   pgadmin_data:

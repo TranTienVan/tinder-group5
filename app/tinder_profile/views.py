@@ -1,54 +1,29 @@
 from django.shortcuts import render
+from django.contrib.auth import logout 
+from rest_framework.request import Request
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
-from hello_world.models import  Members, MembersInfo, MembersSettings
+from .models import  Members, MembersInfo, MembersSettings
 from .serializers import  MembersInfoSerializer, MembersSettingsSerializer
-from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from django.urls import reverse
 from django.db import IntegrityError
+from authentication.handlers import JWTHandler
 import stripe
 import json
 import os
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from dotenv import load_dotenv, find_dotenv
-from django.utils.timezone import datetime
+import datetime
 from django.utils import timezone
 now = timezone.now()
 
-# Stripe keys
-STRIPE_PUBLISHABLE_KEY='pk_test_51ME8c4CPnC0jXuRWrWSce6peO7MIvK80os4Zv3Dxrl1MNYTOxDz4jADXzfH9plqrjVOwIKJFlfoIeX5rRntc5lAw00bjxPb27c'
-STRIPE_SECRET_KEY='sk_test_51ME8c4CPnC0jXuRWQSNAY97FpbvuTuX4QU9B95NoRv8u8NDnXacgkAfPxMV0ixsgLII9tffKnRH7VrLqLHdsYacM00ywSZzHOd'
-
-# Required to run webhook
-# See README on how to use the Stripe CLI to setup
-STRIPE_WEBHOOK_SECRET='whsec_e0436afd653a47c22e2349404afdbb24644b7e67f09c35234549c6d969cf0c9d'
-
-# Stripe subscription data
-DOMAIN='http://localhost:8000'
-BASIC_PRICE_ID='price_1MGl92CPnC0jXuRWuRBy4pEl'
-PRO_PRICE_ID='price_1MGlB5CPnC0jXuRWjJPNCW9r'
-
-# Environment
-STATIC_DIR='./app/hello_world/templates'
 
 def hello_world(request):
     return HttpResponse("<h1>Hello world</h1>")
 
-# Setup Stripe python client library
-load_dotenv(find_dotenv())
-# For sample support and debugging, not required for production:
-stripe.set_app_info(
-    'stripe-samples/checkout-single-subscription',
-    version='0.0.1',
-    url='https://github.com/stripe-samples/checkout-single-subscription')
-
-stripe.api_version = '2020-08-27'
-stripe.api_key = STRIPE_SECRET_KEY
-
-static_dir = str(os.path.abspath(os.path.join(
-    __file__, "..", STATIC_DIR)))
 
 
     
@@ -164,6 +139,34 @@ class MembersSettingsAPI(APIView):
             return HttpResponseNotFound(f"User With ID:{id} Does Not Exist!")
 
 
+# Stripe keys
+
+STRIPE_PUBLISHABLE_KEY = os.environ.get("STRIPE_PUBLISHABLE_KEY")
+STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
+DOMAIN = os.environ.get("DOMAIN")
+BASIC_PRICE_ID = os.environ.get("BASIC_PRICE_ID")
+PRO_PRICE_ID = os.environ.get("PRO_PRICE_ID")
+STATIC_DIR = os.environ.get("STATIC_DIR")
+BASIC_PRICE = 20
+PRO_PRICE = 90
+BASIC_DURATION = 30
+PRO_DURATION = 180
+
+# Setup Stripe python client library
+load_dotenv(find_dotenv())
+# For sample support and debugging, not required for production:
+stripe.set_app_info(
+    'stripe-samples/checkout-single-subscription',
+    version='0.0.1',
+    url='https://github.com/stripe-samples/checkout-single-subscription')
+
+stripe.api_version = '2020-08-27'
+stripe.api_key = STRIPE_SECRET_KEY
+
+static_dir = str(os.path.abspath(os.path.join(
+    __file__, "..", STATIC_DIR)))
+
 #? PAYMENT AND UPGRADE TO PREMIUM API
 
 # @app.route('/upgrade', methods=['GET'])
@@ -172,8 +175,8 @@ def get_example(request):
     id = 1 ##// TEST
     try:
         member = Members.objects.get(user_id = id)
-        if member.membership_date is None or timezone.now() < member.membership_date:
-            return render(request, 'index.html')
+        if member.membership_date is None or timezone.now().date() > member.membership_date:
+             return render(request, 'index.html')
         else:
             return HttpResponse("<h1>You are already a premium member! Thanks you for supporting</h1>")
     except Members.DoesNotExist:
@@ -201,7 +204,7 @@ def get_checkout_session(request):
 # @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session(request):
     price = request.POST.get('priceId')
-    domain_url = DOMAIN + '/hello_world'
+    domain_url = DOMAIN + '/api'
 
     try:
         # Create new Checkout Session for the order
@@ -243,7 +246,7 @@ def customer_portal(request):
 
     # This is the URL to which the customer will be redirected after they are
     # done managing their billing with the portal.
-    return_url =DOMAIN + '/hello_world'
+    return_url =DOMAIN + '/api'
 
     session = stripe.billing_portal.Session.create(
         customer=checkout_session.customer,
@@ -278,11 +281,25 @@ def webhook_received(request):
         data = request_data['data']
         event_type = request_data['type']
     data_object = data['object']
-    print(data_object)
 
     print('event ' + event_type)
 
     if event_type == 'checkout.session.completed':
         print('🔔 Payment succeeded!')
+        customer_email = data_object.customer_details.email
+        amount_total = data_object.amount_total
+        try:
+            member = Members.objects.get(email=customer_email)
+            today = timezone.now().date() 
+            if(amount_total/100 ==BASIC_PRICE):
+                member.membership_date = today + datetime.timedelta(days=BASIC_DURATION)
+            else:
+                member.membership_date = today + datetime.timedelta(days=PRO_DURATION)
+            member.save()
+        except Members.DoesNotExist:
+            #Handle when member type wrong email when checkout
+            return
+            
+
 
     return JsonResponse({'status': 'success'})

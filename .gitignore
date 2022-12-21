@@ -3,8 +3,12 @@ __pycache__
 .DS_Store
 *.ipynb
 test
-
 # .env.dev
 # .env.prod
 # .env.prod.db
 db-preparation-test
+hello_world
+test
+app/authentication/migrations/
+app/tinder_profile/migrations/
+app/tinder/migrations/

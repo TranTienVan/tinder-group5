@@ -2,8 +2,7 @@ from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 from .views import *
 
-urlpatterns = [
-    path("", hello_world, name="hello"),
+urlpatterns = [    
     path('users', MembersInforAPI.as_view(), name = "setup_profile"),
     path('settings', MembersSettingsAPI.as_view(), name = "setup_settings"),
     path('upgrade', get_example, name = "upgrade"),

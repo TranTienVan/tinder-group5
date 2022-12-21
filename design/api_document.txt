@@ -1,0 +1,148 @@
+1. /api/users : user edit profile
+GET     : Get user profile
+- params
+    id : id of users
+
+
+PUT     : User edit their profiles
+- params
+    id
+    address
+    street
+    district
+    city
+    country
+    language
+    hobby
+    company
+    school
+
+DELETE  : User delete their profiles
+- params
+    id
+
+
+
+2. /api/settings : user modify settings
+GET     : Get user settings
+- params
+    id : id of user
+
+
+PUT     : user modify settings
+- params
+    search_locations
+    max_range
+    min_match_age
+    max_match_age
+    visibility
+
+
+
+3. 
+/api/userliked/:user_id
+GET     : Get all people that users liked their profiles
+- params
+    reactor_id
+
+
+/api/userliked/
+POST    : User likes another user profile
+- params
+    reactor_id
+    receiver_id
+    type
+
+/api/userliked/:reactor_id/:receiver_id
+DELETE  : User unlikes another user profiles
+
+
+/api/likeduser/:receiver_id
+GET     : Get all people that like a user profile
+
+
+
+
+4.
+/api/usernomatch/:user_id
+GET     : Get all people that users clicked nomatch to their profiles
+- params
+    reactor_id
+
+
+/api/usernomatch/
+POST    : User click nomatch to another user profile
+- params
+    reactor_id
+    receiver_id
+    type
+
+/api/usernomatch/:reactor_id/:receiver_id
+DELETE  : User unclick nomatch to another user profiles
+
+
+
+
+5. 
+/api/usersuperlike/
+POST    : User click superlike to another user profile
+- params
+    reactor_id
+    receiver_id
+    type
+
+/api/usersuperlike/:reactor_id/:receiver_id
+DELETE  : User unclick superlike to another user profiles
+
+
+
+
+6. 
+/api/userblock/
+POST    : User block another user profile
+- params
+    reactor_id
+    receiver_id
+    type
+
+/api/userblock/:reactor_id/:receiver_id
+DELETE  : User unblock to another user profiles
+
+
+
+
+7. 
+/api/chat
+GET     : Get messages of a user to another user
+- params
+    user_id_1
+    user_id_2
+    page        : pagination (20 messages per page)
+
+
+POST    : a user send message to another user
+- params
+    sender_id
+    recipient_id
+    message
+
+
+
+/api/chat/message_id
+DELETE  : a user delete a message
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
