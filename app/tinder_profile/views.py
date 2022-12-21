@@ -9,17 +9,18 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.db import IntegrityError
 from authentication.handlers import JWTHandler
-
+from authentication.models import MyUser
 
 def hello_world(request):
     return HttpResponse("<h1>Hello world</h1>")
-
 
 class MembersInforAPI(APIView):
     def get(self, request):
         try: 
             id =  JWTHandler.get_current_user(request.COOKIES) 
-            user_info, created = MembersInfo.objects.get_or_create(user_id = id)
+            user = MyUser.objects.filter(id = id).first()
+            user_info, created = MembersInfo.objects.get_or_create(user = user.members)
+            
             serializer_context = {
                  'request': request,
             }
@@ -41,7 +42,6 @@ class MembersInforAPI(APIView):
             if(request.POST.get('user_name') is not None):
                 user.user_name = request.POST.get('user_name') 
             user.save()
-            
             
             user_info, created = MembersInfo.objects.get_or_create(user_id = id)
             user_info.address = request.POST.get('address')
@@ -86,11 +86,11 @@ class MembersSettingsAPI(APIView):
     def get(self, request):
         try: 
             id =  JWTHandler.get_current_user(request.COOKIES) 
-
-            user_setting, created = MembersSettings.objects.get_or_create(user_id = id)
+            user = MyUser.objects.filter(id = id).first()
+            user_setting, created = MembersSettings.objects.get_or_create(user = user.members)
 
             serializer_context = {
-           'request': request,
+                'request': request,
             }
             serializer = MembersSettingsSerializer(user_setting, serializer_context)
             if serializer.is_valid():
