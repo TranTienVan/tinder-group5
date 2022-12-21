@@ -2,17 +2,14 @@ from io import BytesIO
 from PIL import Image
 # import Image
 from django.db import models
-from django.contrib.auth.models import User
+from authentication.models import MyUser
 from django.core.files import File
 from django.conf import settings
-
-
-User = settings.AUTH_USER_MODEL
 
 # Create your models here.
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete= models.CASCADE)
+    user = models.OneToOneField(MyUser, on_delete= models.CASCADE)
     phone = models.CharField(max_length=12, blank=True, null=True)
     is_premium = models.BooleanField(blank=True, null=True)
     is_admin = models.BooleanField(blank=True, null=True)
@@ -67,9 +64,6 @@ class Profile(models.Model):
         small_picture_url =  File(thum_io, name = image.name)
         return small_picture_url
 
-
-
-
 class Memberships(models.Model):
     group_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=500,null=True)
@@ -80,22 +74,19 @@ class Memberships(models.Model):
     enable = models.IntegerField(null=True)
 
     
-    
 class Members(models.Model):
-    user_id =models.AutoField(primary_key=True)
-    email = models.CharField(max_length=1024, blank=True, null=False)
+    user = models.OneToOneField(MyUser, on_delete= models.CASCADE)
     phone = models.CharField(max_length=12, blank=True, null=True)
-    password = models.CharField(max_length=1024, blank=True, null = False)
-    user_name = models.CharField(max_length = 1024, blank=True, null = False)
+    user_name = models.CharField(max_length = 1024, blank=True, null = True) # not null
     membership_date = models.DateTimeField(auto_now=True)
-    user_status = models.IntegerField(blank=True, null=False)
+    user_status = models.IntegerField(blank=True, null=True) # not null
     join_date = models.DateField(blank=True, null=True)
     last_activity = models.DateTimeField(auto_now=True)
     last_edit = models.DateTimeField(auto_now=True)
     approved_profile = models.IntegerField(null=True, blank=True)
     account_status = models.IntegerField(null=True, blank=True)
 
-    group_id = models.ForeignKey(Memberships, on_delete=models.CASCADE, null=False)
+    group_id = models.ForeignKey(Memberships, on_delete=models.CASCADE, null=True) # not null
 
 
 

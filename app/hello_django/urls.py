@@ -6,9 +6,9 @@ from django.views.generic import RedirectView, TemplateView
 
 urlpatterns = [
     path("admin", admin.site.urls),
-    path('api/', include('authentication.urls')),
-    path("api/", include("tinder.urls")),
-    path("api/", include("tinder_profile.urls"))
+    path('api/auth/', include('authentication.urls')),
+    path("api/func/", include("tinder.urls")),
+    path("api/profile/", include("tinder_profile.urls"))
 ]
 
 if bool(settings.DEBUG):

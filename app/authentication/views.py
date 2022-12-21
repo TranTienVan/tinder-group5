@@ -6,7 +6,7 @@ from .serializers import MyUserSerializer
 from .models import MyUser
 from rest_framework.exceptions import AuthenticationFailed
 from .handlers import JWTHandler
-import jwt
+from tinder_profile.models import Members
 import os 
 
 JWT_COOKIE = os.environ.get("JWT_COOKIE")
@@ -16,6 +16,9 @@ class registerAPIView(APIView):
         serializer = MyUserSerializer(data = request.data)
         serializer.is_valid(raise_exception = True)   #if anything not valid, raise exception
         serializer.save()
+        user = MyUser.objects.filter(id = serializer.data['id']).first()
+        member = Members.objects.create(user = user)
+        member.save()
         return Response(serializer.data)
 
 class LoginAPIView(APIView):
@@ -43,7 +46,6 @@ class LoginAPIView(APIView):
             JWT_COOKIE: token
         }
 
-        #if password correct
         return response
 
 
