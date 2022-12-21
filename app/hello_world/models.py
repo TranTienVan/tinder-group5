@@ -70,19 +70,18 @@ class Profile(models.Model):
 
 class Members(models.Model):
     user_id =models.AutoField(primary_key=True)
-    email = models.CharField(max_length=1024, blank=True, null=False)
+    email = models.CharField(max_length=1024, blank=True, null=False, unique=True)
     phone = models.CharField(max_length=12, blank=True, null=True)
     password = models.CharField(max_length=1024, blank=True, null = False)
     user_name = models.CharField(max_length = 1024, blank=True, null = False)
     group_id = models.IntegerField(blank=True, null= False)
-    membership_date = models.DateTimeField(auto_now=True)
+    membership_date = models.DateTimeField(blank= True, null= True)
     user_status = models.IntegerField(blank=True, null=False)
     join_date = models.DateField(blank=True, null=True)
     last_activity = models.DateTimeField(auto_now=True)
     last_edit = models.DateTimeField(auto_now=True)
     approved_profile = models.IntegerField(null=True, blank=True)
     account_status = models.IntegerField(null=True, blank=True)
-
 
 
 
