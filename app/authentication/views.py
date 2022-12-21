@@ -12,14 +12,14 @@ import os
 JWT_COOKIE = os.environ.get("JWT_COOKIE")
 
 class registerAPIView(APIView):
-    def post(self, request):
+    def post(self, request, format = None):
         serializer = MyUserSerializer(data = request.data)
         serializer.is_valid(raise_exception = True)   #if anything not valid, raise exception
         serializer.save()
         return Response(serializer.data)
 
 class LoginAPIView(APIView):
-    def post(self, request):
+    def post(self, request, format = None):
         email = request.data['email']
         password = request.data['password']
 
@@ -49,7 +49,7 @@ class LoginAPIView(APIView):
 
 # get user using cookie
 class UserView(APIView):
-    def get(self, request):
+    def get(self, request, format = None):
         id = JWTHandler.get_current_user(request.COOKIES)
         
         user = MyUser.objects.filter(id = id).first()
@@ -58,7 +58,7 @@ class UserView(APIView):
         return Response(serializer.data)
 
 class LogoutView(APIView):
-    def post(self, request):
+    def post(self, request, format = None):
         response = Response()
         response.delete_cookie(JWT_COOKIE)
         response.data = {

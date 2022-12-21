@@ -21,17 +21,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# SECRET_KEY = os.environ.get("SECRET_KEY")
-SECRET_KEY = "foo"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-# DEBUG = int(os.environ.get("DEBUG", default=0))
-DEBUG = 1
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
-ALLOWED_HOSTS = "localhost 127.0.0.1 [::1]".split(" ")
-
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -95,12 +91,6 @@ DATABASES = {
         "PASSWORD": os.environ.get("SQL_PASSWORD"),
         "HOST": os.environ.get("SQL_HOST"),
         "PORT": os.environ.get("SQL_PORT")
-        # "ENGINE": 'django.db.backends.postgresql',
-        # "NAME": 'trong-db-dev-test',
-        # "USER": "postgres",
-        # "PASSWORD":'vanhuylamtrongtuan',
-        # "HOST":'db.cugjcyymaqbyyjikpixb.supabase.co',
-        # "PORT":5432,
     }
 }
 
@@ -153,4 +143,5 @@ MEDIA_ROOT = BASE_DIR / "mediafiles"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Authentication model
 AUTH_USER_MODEL = 'authentication.MyUser'
