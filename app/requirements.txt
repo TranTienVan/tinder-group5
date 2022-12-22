@@ -1,7 +1,11 @@
 Django
 gunicorn
 psycopg2-binary
+Pillow
 djangorestframework
+Flask==2.2.2
+stripe==5.0.0
+python-dotenv==0.21.0
 pyjwt
 Pillow
 asgiref
