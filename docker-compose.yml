@@ -51,7 +51,7 @@ services:
   stripe-cli:
       image: stripe/stripe-cli
       container_name: stripe-cli
-      command: listen --forward-to "localhost:8000/api/webhook"
+      command: listen --forward-to "localhost:8000/api/profile/webhook"
       environment:
         - STRIPE_API_KEY=sk_test_51ME8c4CPnC0jXuRWQSNAY97FpbvuTuX4QU9B95NoRv8u8NDnXacgkAfPxMV0ixsgLII9tffKnRH7VrLqLHdsYacM00ywSZzHOd
         - STRIPE_DEVICE_NAME=WannaDate

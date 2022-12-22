@@ -174,10 +174,10 @@ static_dir = str(os.path.abspath(os.path.join(
 # @app.route('/upgrade', methods=['GET'])
 def get_example(request):
     # id =  JWTHandler.get_current_user(request.COOKIES)
-    id = 1 ##// TEST
+    id = 2 ##// TEST
     try:
         member = Members.objects.get(user_id = id)
-        if member.membership_date is None or timezone.now().date() > member.membership_date:
+        if member.membership_date is None or timezone.now()> member.membership_date:
              return render(request, 'index.html')
         else:
             return HttpResponse("<h1>You are already a premium member! Thanks you for supporting</h1>")
@@ -206,7 +206,7 @@ def get_checkout_session(request):
 # @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session(request):
     price = request.POST.get('priceId')
-    domain_url = DOMAIN + '/api'
+    domain_url = DOMAIN + '/api/profile'
 
     try:
         # Create new Checkout Session for the order
@@ -291,8 +291,9 @@ def webhook_received(request):
         customer_email = data_object.customer_details.email
         amount_total = data_object.amount_total
         try:
-            member = Members.objects.get(email=customer_email)
-            today = timezone.now().date() 
+            user = MyUser.objects.get(email=customer_email)
+            member, created = Members.objects.get_or_create(user  = user)
+            today = timezone.now()
             if(amount_total/100 ==BASIC_PRICE):
                 member.membership_date = today + datetime.timedelta(days=BASIC_DURATION)
             else:
