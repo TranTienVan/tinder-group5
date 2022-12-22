@@ -2,13 +2,20 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from tinder_profile import views
+    
 from django.views.generic import RedirectView, TemplateView
 
 urlpatterns = [
     path("admin", admin.site.urls),
     path('api/auth/', include('authentication.urls')),
     path("api/func/", include("tinder.urls")),
-    path("api/profile/", include("tinder_profile.urls"))
+    path("api/profile/", include("tinder_profile.urls")),
+
+
+    # JUST FOR AUTO PROCESS
+    path("config/", views.get_publishable_key, name = "config"),
+    path("checkout-session/", views.get_checkout_session, name = "checkout-session"),
 ]
 
 if bool(settings.DEBUG):
