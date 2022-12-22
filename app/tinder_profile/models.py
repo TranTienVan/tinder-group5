@@ -6,7 +6,6 @@ from authentication.models import MyUser
 from django.core.files import File
 
 # Create your models here.
-
 class Memberships(models.Model):
     group_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=500,null=True)
@@ -15,7 +14,6 @@ class Memberships(models.Model):
     price= models.IntegerField(null=True)
     duration = models.IntegerField(null=True)
     enable = models.IntegerField(null=True)
-
     
 class Members(models.Model):
     user = models.OneToOneField(MyUser, on_delete= models.CASCADE)
@@ -65,11 +63,3 @@ class MembersImages(models.Model):
     image_url = models.ImageField(upload_to='uploads/', blank=True, null=True)
     uploaded_date = models.DateField(blank=True, null=False, auto_now=True)
 
-class Memberships(models.Model):
-    group_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=500,null=True)
-    description = models.TextField(null=True)
-    permissions = models.TextField(null=True)
-    price= models.IntegerField(null=True)
-    duration = models.IntegerField(null=True)
-    enable = models.IntegerField(null=True)
