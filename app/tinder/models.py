@@ -8,11 +8,11 @@ from enum import IntEnum
 from tinder_profile.models import Members
 
     
-class ReactionType(IntEnum):
-    LIKE: 1
-    NO_MATCH: 2
-    SUPER_LIKE: 3
-    BLOCK: 4
+class ReactionType():
+    LIKE = 1
+    NO_MATCH = 2
+    SUPER_LIKE = 3
+    BLOCK = 4
 
 # Create your models here.
 class Reactions(models.Model):    

@@ -23,5 +23,7 @@ urlpatterns = [
     
     
     re_path(r"^chat$", views.ChatAPI.as_view(), name="user_chat_another_user"),
-    re_path(r"^chat/([0-9]+)$", views.ChatAPI.as_view(), name="user_delete_message")
+    re_path(r"^chat/([0-9]+)$", views.ChatAPI.as_view(), name="user_delete_message"),
+    
+    re_path(r"^connections$", views.ConnectionAPI.as_view())
 ]

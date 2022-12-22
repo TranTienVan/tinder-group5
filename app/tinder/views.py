@@ -14,6 +14,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from rest_framework.views import APIView
 from django.db.models import Q
 from authentication.handlers import JWTHandler
+from django.db.models import Q, OuterRef
 # like : 1
 # nomatch : 2
 # super_like : 3
@@ -65,6 +66,37 @@ class BlockAPI(APIView):
         return JsonResponse(response)
 
 
+class ConnectionAPI(APIView):
+    def get(self, request: HttpRequest):
+        """params
+        """
+        id = JWTHandler.get_current_user(request.COOKIES)
+        
+        connections = Connections.objects.filter(user_id_1=id)
+        connections_list = list(connections.values())
+        
+        
+        response = []
+        for connection in connections_list:
+            print(connection)
+            
+            connector = list(Connections.objects.filter(user_id_1 = connection["user_id_2_id"], user_id_2 = id).values())
+            
+            if len(connector) != 0:
+                
+                response.append(connector[0])
+        
+        # Create Q objects for the two combinations
+        # Create Q objects for the two combinations
+        
+        print(response)
+        
+        # Convert the connections queryset to a list of dictionaries
+        
+
+        # Return the connections as a JSON response
+        return JsonResponse(response, safe=False)
+    
 class ChatAPI(APIView):
     def get(self, request: HttpRequest):
         """params

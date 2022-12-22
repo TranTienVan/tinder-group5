@@ -1,4 +1,29 @@
-1. /api/users : user edit profile
+** /api/auth/register : user sign up
+POST
+- params
+    email
+    password
+
+
+
+** /api/auth/login : user login
+POST
+- params
+    email
+    password
+
+
+** /api/auth/logout : user logout
+POST
+- params
+    id
+
+
+
+
+
+
+1. /api/profile/users : user edit profile
 GET     : Get user profile
 - params
     id : id of users
@@ -23,7 +48,7 @@ DELETE  : User delete their profiles
 
 
 
-2. /api/settings : user modify settings
+2. /api/profile/settings : user modify settings
 GET     : Get user settings
 - params
     id : id of user
@@ -40,79 +65,79 @@ PUT     : user modify settings
 
 
 3. 
-/api/userliked/:user_id
+/api/func/userliked/:user_id
 GET     : Get all people that users liked their profiles
 - params
     reactor_id
 
 
-/api/userliked/
+/api/func/userliked/
 POST    : User likes another user profile
 - params
     reactor_id
     receiver_id
     type
 
-/api/userliked/:reactor_id/:receiver_id
+/api/func/userliked/:reactor_id/:receiver_id
 DELETE  : User unlikes another user profiles
 
 
-/api/likeduser/:receiver_id
+/api/func/likeduser/:receiver_id
 GET     : Get all people that like a user profile
 
 
 
 
 4.
-/api/usernomatch/:user_id
+/api/func/usernomatch/:user_id
 GET     : Get all people that users clicked nomatch to their profiles
 - params
     reactor_id
 
 
-/api/usernomatch/
+/api/func/usernomatch/
 POST    : User click nomatch to another user profile
 - params
     reactor_id
     receiver_id
     type
 
-/api/usernomatch/:reactor_id/:receiver_id
+/api/func/usernomatch/:reactor_id/:receiver_id
 DELETE  : User unclick nomatch to another user profiles
 
 
 
 
 5. 
-/api/usersuperlike/
+/api/func/usersuperlike/
 POST    : User click superlike to another user profile
 - params
     reactor_id
     receiver_id
     type
 
-/api/usersuperlike/:reactor_id/:receiver_id
+/api/func/usersuperlike/:reactor_id/:receiver_id
 DELETE  : User unclick superlike to another user profiles
 
 
 
 
 6. 
-/api/userblock/
+/api/func/userblock/
 POST    : User block another user profile
 - params
     reactor_id
     receiver_id
     type
 
-/api/userblock/:reactor_id/:receiver_id
+/api/func/userblock/:reactor_id/:receiver_id
 DELETE  : User unblock to another user profiles
 
 
 
 
 7. 
-/api/chat
+/api/func/chat
 GET     : Get messages of a user to another user
 - params
     user_id_1
@@ -128,12 +153,17 @@ POST    : a user send message to another user
 
 
 
-/api/chat/message_id
+/api/func/chat/message_id
 DELETE  : a user delete a message
 
 
 
 
+8. 
+/api/func/connections
+GET     : Get all chat of a user
+- params
+    user_id
 
 
 
