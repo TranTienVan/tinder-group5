@@ -18,8 +18,10 @@ class MembersInforAPI(APIView):
     def get(self, request):
         try: 
             id =  JWTHandler.get_current_user(request.COOKIES) 
+            print(id)
             user = MyUser.objects.filter(id = id).first()
-            user_info, created = MembersInfo.objects.get_or_create(user = user.members)
+            
+            user_info, created = MembersInfo.objects.get_or_create(user_id = id)
             
             serializer_context = {
                  'request': request,
@@ -30,7 +32,8 @@ class MembersInforAPI(APIView):
             else: 
                 print(serializer.errors)
                 return HttpResponse(serializer.errors)
-        except IntegrityError:
+        except IntegrityError  as e:
+            print(e)
             return HttpResponseNotFound(f"User With ID:{id} Does Not Exist!")
 
     def put(self, request):
@@ -38,21 +41,23 @@ class MembersInforAPI(APIView):
             
             
             id =  JWTHandler.get_current_user(request.COOKIES) 
+            print(id)
             user = Members.objects.get(user_id=id)
             if(request.POST.get('user_name') is not None):
                 user.user_name = request.POST.get('user_name') 
             user.save()
             
             user_info, created = MembersInfo.objects.get_or_create(user_id = id)
-            user_info.address = request.POST.get('address')
-            user_info.street = request.POST.get('street')
-            user_info.district = request.POST.get('district')
-            user_info.city = request.POST.get('city')
-            user_info.country = request.POST.get('country')
-            user_info.language = request.POST.get('language')
-            user_info.hobby = request.POST.get('hobby')
-            user_info.company =request.POST.get('company')
-            user_info.school = request.POST.get('school')
+            
+            print(request.POST.get('address'))
+            user_info.address = request.GET.get('address')
+            user_info.street = request.GET.get('street')
+            user_info.district = request.GET.get('district')
+            user_info.city = request.GET.get('country')
+            user_info.language = request.GET.get('language')
+            user_info.hobby = request.GET.get('hobby')
+            user_info.company =request.GET.get('company')
+            user_info.school = request.GET.get('school')
             user_info.save()
 
             serializer_context = {
@@ -105,11 +110,11 @@ class MembersSettingsAPI(APIView):
         try: 
             id =  JWTHandler.get_current_user(request.COOKIES)
             user_setting, created = MembersSettings.objects.get_or_create(user_id = id)
-            user_setting.search_locations = request.POST.get('search_locations')
-            user_setting.max_range = request.POST.get('max_range')
-            user_setting.min_match_age = request.POST.get('min_match_age')
-            user_setting.max_match_age = request.POST.get('max_match_age')
-            user_setting.visibility = request.POST.get('visibility')
+            user_setting.search_locations = request.GET.get('search_locations')
+            user_setting.max_range = request.GET.get('max_range')
+            user_setting.min_match_age = request.GET.get('min_match_age')
+            user_setting.max_match_age = request.GET.get('max_match_age')
+            user_setting.visibility = request.GET.get('visibility')
             
             serializer_context = {
            'request': request,
