@@ -5,14 +5,25 @@ from django.db import models
 from authentication.models import MyUser
 from django.core.files import File
 
-# Create your models here.
+
+class PremiumType:
+    NORMAL = 1
+    PREMIUM = 2
+
+# Create your models here
 class Memberships(models.Model):
     group_id = models.AutoField(primary_key=True)
+    # 1 normal
+    # 2 premium
+    
+    
     name = models.CharField(max_length=500,null=True)
     description = models.TextField(null=True)
     permissions = models.TextField(null=True)
     price= models.IntegerField(null=True)
     duration = models.IntegerField(null=True)
+    # Number of time remaining for this service
+    
     enable = models.IntegerField(null=True)
     
 class Members(models.Model):
