@@ -61,14 +61,14 @@ class MembersInforAPI(APIView):
             user_info, created = MembersInfo.objects.get_or_create(user_id = id)
             
             print(request.POST.get('address'))
-            user_info.address = request.GET.get('address')
-            user_info.street = request.GET.get('street')
-            user_info.district = request.GET.get('district')
-            user_info.city = request.GET.get('country')
-            user_info.language = request.GET.get('language')
-            user_info.hobby = request.GET.get('hobby')
-            user_info.company =request.GET.get('company')
-            user_info.school = request.GET.get('school')
+            user_info.address = request.POST.get('address')
+            user_info.street = request.POST.get('street')
+            user_info.district = request.POST.get('district')
+            user_info.city = request.POST.get('country')
+            user_info.language = request.POST.get('language')
+            user_info.hobby = request.POST.get('hobby')
+            user_info.company =request.POST.get('company')
+            user_info.school = request.POST.get('school')
             user_info.save()
 
             serializer_context = {
@@ -121,11 +121,11 @@ class MembersSettingsAPI(APIView):
         try: 
             id =  JWTHandler.get_current_user(request.COOKIES)
             user_setting, created = MembersSettings.objects.get_or_create(user_id = id)
-            user_setting.search_locations = request.GET.get('search_locations')
-            user_setting.max_range = request.GET.get('max_range')
-            user_setting.min_match_age = request.GET.get('min_match_age')
-            user_setting.max_match_age = request.GET.get('max_match_age')
-            user_setting.visibility = request.GET.get('visibility')
+            user_setting.search_locations = request.POST.get('search_locations')
+            user_setting.max_range = request.POST.get('max_range')
+            user_setting.min_match_age = request.POST.get('min_match_age')
+            user_setting.max_match_age = request.POST.get('max_match_age')
+            user_setting.visibility = request.POST.get('visibility')
             
             serializer_context = {
            'request': request,

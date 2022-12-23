@@ -16,7 +16,7 @@ class Memberships(models.Model):
     enable = models.IntegerField(null=True)
     
 class Members(models.Model):
-    user = models.OneToOneField(MyUser, on_delete= models.CASCADE)
+    user = models.OneToOneField(MyUser, on_delete= models.CASCADE, primary_key=True)
     phone = models.CharField(max_length=12, blank=True, null=True)
     user_name = models.CharField(max_length = 1024, blank=True, null = True) # not null
     membership_date = models.DateField(auto_now=True)
