@@ -32,26 +32,26 @@ services:
   #     - tinder-group5
   #   restart: unless-stopped
   
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-       - pgadmin_data:/var/lib/pgadmin
+  #   pgadmin:
+  #     container_name: pgadmin_container
+  #     image: dpage/pgadmin4
+  #     environment:
+  #       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+  #       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+  #       PGADMIN_CONFIG_SERVER_MODE: 'False'
+  #     volumes:
+  #        - pgadmin_data:/var/lib/pgadmin
 
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    networks:
-      - tinder-group5
-    restart: unless-stopped
+  #     ports:
+  #       - "${PGADMIN_PORT:-5050}:80"
+  #     networks:
+  #       - tinder-group5
+  #     restart: unless-stopped
 
   stripe-cli:
       image: stripe/stripe-cli
       container_name: stripe-cli
-      command: listen --forward-to "localhost:8000/api/webhook"
+      command: listen --forward-to "localhost:8000/api/profile/webhook"
       environment:
         - STRIPE_API_KEY=sk_test_51ME8c4CPnC0jXuRWQSNAY97FpbvuTuX4QU9B95NoRv8u8NDnXacgkAfPxMV0ixsgLII9tffKnRH7VrLqLHdsYacM00ywSZzHOd
         - STRIPE_DEVICE_NAME=WannaDate
