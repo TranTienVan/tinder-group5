@@ -8,7 +8,7 @@ urlpatterns = [
     re_path(r"^userliked/([0-9]+)$", views.MembersLikedAPI.as_view(), name="get_all_whose_user_liked"),
     
     
-    re_path(r"^likeduser/([0-9]+)$", views.LikedMembersAPI.as_view()),
+    re_path(r"^likeduser$", views.LikedMembersAPI.as_view()),
     
     
     re_path(r"^usernomatch$", views.NoMatchAPI.as_view(), name="user_nomatch_another_user"),

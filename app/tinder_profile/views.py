@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from .models import  Members, MembersInfo, MembersSettings
 from .serializers import  MembersInfoSerializer, MembersSettingsSerializer
 from rest_framework.response import Response
+from django.http.request import HttpRequest
 from rest_framework.views import APIView
 from rest_framework import status
 from django.urls import reverse
@@ -19,30 +20,69 @@ from django.shortcuts import redirect
 from dotenv import load_dotenv, find_dotenv
 import datetime
 from django.utils import timezone
+from django.forms.models import model_to_dict
 now = timezone.now()
 
 
 def hello_world(request):
     return HttpResponse("<h1>Hello world</h1>")
+        
 
 class MembersInforAPI(APIView):
-    def get(self, request):
+    def get(self, request: HttpRequest):
         try: 
             id =  JWTHandler.get_current_user(request.COOKIES) 
-            print(id)
-            user = MyUser.objects.filter(id = id).first()
             
-            user_info, created = MembersInfo.objects.get_or_create(user_id = id)
+            user_id = request.GET.get("user_id")
+            latest_user_id = request.GET.get("latest")
+            is_all = request.GET.get("all")
             
-            serializer_context = {
-                 'request': request,
-            }
-            serializer = MembersInfoSerializer(user_info, serializer_context)
-            if serializer.is_valid():
-                return Response(serializer.data)
-            else: 
-                print(serializer.errors)
-                return HttpResponse(serializer.errors)
+            # Get all users
+            if is_all:
+                user_info = list(MembersInfo.objects.all().values('user_id', 'gender'))
+                
+                return JsonResponse(user_info, safe=False)
+            
+            
+            # Get latest user
+            if latest_user_id:
+                user_info = MembersInfo.objects.latest('user_id')
+                                
+                obj_dict = model_to_dict(user_info)
+                # Get the URL of the image file
+                image_url = obj_dict['avatar_url'].url
+                # Include the image URL in the dictionary
+                obj_dict['avatar_url'] = image_url
+                
+                return JsonResponse(obj_dict, safe=False)
+                
+            
+            # Get user with specific id
+            print(user_id)
+            if not user_id:
+                user = MyUser.objects.filter(id = id).first()
+                            
+                user_info, created = MembersInfo.objects.get_or_create(user_id = id)
+                
+                serializer_context = {
+                    'request': request,
+                }
+                serializer = MembersInfoSerializer(user_info, serializer_context)
+                if serializer.is_valid():
+                    return Response(serializer.data)
+                else: 
+                    print(serializer.errors)
+                    return HttpResponse(serializer.errors)
+            else:
+                user_info = MembersInfo.objects.get(user_id = user_id)
+                obj_dict = model_to_dict(user_info)
+                # Get the URL of the image file
+                image_url = obj_dict['avatar_url'].url
+                # Include the image URL in the dictionary
+                obj_dict['avatar_url'] = image_url
+                
+                return JsonResponse(obj_dict, safe=False)
+
         except IntegrityError  as e:
             print(e)
             return HttpResponseNotFound(f"User With ID:{id} Does Not Exist!")
@@ -54,21 +94,22 @@ class MembersInforAPI(APIView):
             id =  JWTHandler.get_current_user(request.COOKIES) 
             print(id)
             user = Members.objects.get(user_id=id)
-            if(request.POST.get('user_name') is not None):
-                user.user_name = request.POST.get('user_name') 
+            if(request.data.get('user_name') is not None):
+                user.user_name = request.data.get('user_name') 
             user.save()
             
             user_info, created = MembersInfo.objects.get_or_create(user_id = id)
             
-            print(request.POST.get('address'))
-            user_info.address = request.POST.get('address')
-            user_info.street = request.POST.get('street')
-            user_info.district = request.POST.get('district')
-            user_info.city = request.POST.get('country')
-            user_info.language = request.POST.get('language')
-            user_info.hobby = request.POST.get('hobby')
-            user_info.company =request.POST.get('company')
-            user_info.school = request.POST.get('school')
+            print(request.data.get('address'))
+            user_info.address = request.data.get('address')
+            user_info.street = request.data.get('street')
+            user_info.district = request.data.get('district')
+            user_info.country = request.data.get('country')
+            user_info.city = request.data.get('city')
+            user_info.language = request.data.get('language')
+            user_info.hobby = request.data.get('hobby')
+            user_info.company =request.data.get('company')
+            user_info.school = request.data.get('school')
             user_info.save()
 
             serializer_context = {
@@ -99,21 +140,36 @@ class MembersInforAPI(APIView):
             return HttpResponseNotFound(f"User With ID:{id} Does Not Exist!")
 
 class MembersSettingsAPI(APIView):
-    def get(self, request):
+    def get(self, request: HttpRequest):
         try: 
-            id =  JWTHandler.get_current_user(request.COOKIES) 
-            user = MyUser.objects.filter(id = id).first()
-            user_setting, created = MembersSettings.objects.get_or_create(user = user.members)
+            id =  JWTHandler.get_current_user(request.COOKIES)
+            user_id = request.GET.get("user_id")
+            latest_user_id = request.GET.get("latest")
+            
+            if latest_user_id:
+                user_info = MembersSettings.objects.latest('user_id')
+                
+                return Response(model_to_dict(user_info))
+            
+            
+            if not user_id:
+                user = MyUser.objects.filter(id = id).first()
+                user_setting, created = MembersSettings.objects.get_or_create(user = user.members)
 
-            serializer_context = {
-                'request': request,
-            }
-            serializer = MembersSettingsSerializer(user_setting, serializer_context)
-            if serializer.is_valid():
-                return Response(serializer.data)
-            else: 
-                print(serializer.errors)
-                return HttpResponse(serializer.errors)
+                serializer_context = {
+                    'request': request,
+                }
+                serializer = MembersSettingsSerializer(user_setting, serializer_context)
+                if serializer.is_valid():
+                    return Response(serializer.data)
+                else: 
+                    print(serializer.errors)
+                    return HttpResponse(serializer.errors)
+            else:
+                user_setting = MembersSettings.objects.get(user_id = user_id)
+                
+                return Response(model_to_dict(user_setting))                
+                
         except IntegrityError:
             return HttpResponseNotFound(f"User With ID:{id} Does Not Exist!")
 
@@ -121,11 +177,11 @@ class MembersSettingsAPI(APIView):
         try: 
             id =  JWTHandler.get_current_user(request.COOKIES)
             user_setting, created = MembersSettings.objects.get_or_create(user_id = id)
-            user_setting.search_locations = request.POST.get('search_locations')
-            user_setting.max_range = request.POST.get('max_range')
-            user_setting.min_match_age = request.POST.get('min_match_age')
-            user_setting.max_match_age = request.POST.get('max_match_age')
-            user_setting.visibility = request.POST.get('visibility')
+            user_setting.search_locations = request.data.get('search_locations')
+            user_setting.max_range = request.data.get('max_range')
+            user_setting.min_match_age = request.data.get('min_match_age')
+            user_setting.max_match_age = request.data.get('max_match_age')
+            user_setting.visibility = request.data.get('visibility')
             
             serializer_context = {
            'request': request,
@@ -205,7 +261,7 @@ def get_checkout_session(request):
 
 # @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session(request):
-    price = request.POST.get('priceId')
+    price = request.data.get('priceId')
     domain_url = DOMAIN + '/api/profile'
 
     try:
@@ -243,7 +299,7 @@ def get_cancel(request):
 def customer_portal(request):
     # For demonstration purposes, we're using the Checkout session to retrieve the customer ID.
     # Typically this is stored alongside the authenticated user in your database.
-    checkout_session_id = request.POST.get('sessionId')
+    checkout_session_id = request.data.get('sessionId')
     checkout_session = stripe.checkout.Session.retrieve(checkout_session_id)
 
     # This is the URL to which the customer will be redirected after they are
