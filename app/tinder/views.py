@@ -31,7 +31,7 @@ class BlockAPI(APIView):
         """
         print(request)
         reactor_id = JWTHandler.get_current_user(request.COOKIES)
-        receiver_id = request.POST.get("receiver_id", "")
+        receiver_id = request.data.get("receiver_id", "")
         type = ReactionType.BLOCK
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
@@ -133,8 +133,8 @@ class ChatAPI(APIView):
         """
         
         sender_id = JWTHandler.get_current_user(request.COOKIES) 
-        recipient_id = request.POST.get("recipient_id", "")
-        message = request.POST.get("message", "")
+        recipient_id = request.data.get("recipient_id", "")
+        message = request.data.get("message", "")
         send_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         try:
@@ -189,7 +189,7 @@ class SuperLikeAPI(APIView):
      
         print(request)
         reactor_id = JWTHandler.get_current_user(request.COOKIES) 
-        receiver_id = request.POST.get("receiver_id", "")
+        receiver_id = request.data.get("receiver_id", "")
         type = ReactionType.SUPER_LIKE
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
@@ -249,7 +249,7 @@ class NoMatchAPI(APIView):
         
         print(request)
         reactor_id = JWTHandler.get_current_user(request.COOKIES) 
-        receiver_id = request.POST.get("receiver_id", "")
+        receiver_id = request.data.get("receiver_id", "")
         type = ReactionType.NO_MATCH
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
@@ -284,7 +284,11 @@ class NoMatchAPI(APIView):
 class LikedMembersAPI(APIView):
     def get(self, request: HttpRequest, _receiver_id=0): 
         receiver_id = JWTHandler.get_current_user(request.COOKIES) 
-        reactions = Reactions.objects.filter(receiver_id=receiver_id, type=ReactionType.LIKE).values()
+        reactions = list(Reactions.objects.filter(receiver_id=receiver_id, type=ReactionType.LIKE).values())
+        
+        reactions_superlike = list(Reactions.objects.filter(receiver_id=receiver_id, type=ReactionType.SUPER_LIKE).values())
+        reactions.extend(reactions_superlike)
+        
         print(reactions)
         
         return JsonResponse([entry for entry in reactions], safe=False)
@@ -293,9 +297,14 @@ class LikedMembersAPI(APIView):
 class MembersLikedAPI(APIView):
     def get(self, request: HttpRequest, _reactor_id=0):
         reactor_id = JWTHandler.get_current_user(request.COOKIES) 
-        reactions = Reactions.objects.filter(reactor_id= reactor_id, type=ReactionType.LIKE).values()
-        print(reactions)
+        reactions = list(Reactions.objects.filter(reactor_id= reactor_id, type=ReactionType.LIKE).values())
+        
 
+        reactions_superlike = list(Reactions.objects.filter(reactor_id= reactor_id, type=ReactionType.LIKE).values())
+        reactions.extend(reactions_superlike)
+        reactions.extend(reactions_superlike)
+            
+        print(reactions)
         return JsonResponse([entry for entry in reactions], safe=False)
     
     
@@ -310,7 +319,7 @@ class MembersLikedAPI(APIView):
         
         print(request)
         reactor_id = JWTHandler.get_current_user(request.COOKIES) 
-        receiver_id = request.POST.get("receiver_id", "")
+        receiver_id = request.data.get("receiver_id", "")
         type = ReactionType.LIKE
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)

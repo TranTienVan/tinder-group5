@@ -55,7 +55,7 @@ class MembersInfo(models.Model):
     avatar_url =  models.ImageField(upload_to='uploads/', blank=True, null=True)
     about_me = models.TextField(blank=True, null=True)
     birthday = models.DateField(blank=True, null=True,auto_now_add=True)
-    gender = models.BooleanField(blank=True, null=True, default=False)
+    is_female = models.BooleanField(blank=True, null=True, default=False)
     address = models.CharField(max_length=1024, blank=True, null=True)
     street = models.CharField(max_length=1024, blank=True, null=True)
     district = models.CharField(max_length=1024, blank=True, null=True)

@@ -45,7 +45,7 @@ class MembersSerializer(serializers.ModelSerializer):
             "last_name",
             "birth_date",
             "about_me",
-            "gender",
+            "is_female",
             "group_id",
             "membership_date",
             "user_status",
