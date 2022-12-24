@@ -21,8 +21,6 @@ POST
 
 
 
-
-
 1. /api/profile/users : user edit profile
 GET     : Get user profile
 - params

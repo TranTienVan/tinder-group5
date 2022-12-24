@@ -28,7 +28,8 @@ def hello_world(request):
 class MembersInforAPI(APIView):
     def get(self, request):
         try: 
-            id =  JWTHandler.get_current_user(request.COOKIES) 
+            # id =  JWTHandler.get_current_user(request.COOKIES) 
+            id = 2
             print(id)
             user = MyUser.objects.filter(id = id).first()
             
@@ -54,6 +55,7 @@ class MembersInforAPI(APIView):
             id =  JWTHandler.get_current_user(request.COOKIES) 
             print(id)
             user = Members.objects.get(user_id=id)
+            data = json.loads(request.body)
             if(request.POST.get('user_name') is not None):
                 user.user_name = request.POST.get('user_name') 
             user.save()
@@ -101,7 +103,8 @@ class MembersInforAPI(APIView):
 class MembersSettingsAPI(APIView):
     def get(self, request):
         try: 
-            id =  JWTHandler.get_current_user(request.COOKIES) 
+            # id =  JWTHandler.get_current_user(request.COOKIES) 
+            id = 2
             user = MyUser.objects.filter(id = id).first()
             user_setting, created = MembersSettings.objects.get_or_create(user = user.members)
 
@@ -119,12 +122,13 @@ class MembersSettingsAPI(APIView):
 
     def put(self, request):
         try: 
-            id =  JWTHandler.get_current_user(request.COOKIES)
+            # id =  JWTHandler.get_current_user(request.COOKIES)
+            id = 2
             user_setting, created = MembersSettings.objects.get_or_create(user_id = id)
             user_setting.search_locations = request.POST.get('search_locations')
             user_setting.max_range = request.POST.get('max_range')
             user_setting.min_match_age = request.POST.get('min_match_age')
-            user_setting.max_match_age = request.POSTT.get('max_match_age')
+            user_setting.max_match_age = request.POST.get('max_match_age')
             user_setting.visibility = request.POST.get('visibility')
             
             serializer_context = {

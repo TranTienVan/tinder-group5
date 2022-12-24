@@ -14,20 +14,20 @@ JWT_COOKIE = os.environ.get("JWT_COOKIE")
 class registerAPIView(APIView):
     def post(self, request: HttpRequest, format = None):
         print(request.GET.values())
-        serializer = MyUserSerializer(data = request.GET.dict())
+        serializer = MyUserSerializer(data = request.POST.dict())
         serializer.is_valid(raise_exception = True)   #if anything not valid, raise exception
         serializer.save()
         user = MyUser.objects.filter(id = serializer.data['id']).first()
         
         
-        member = Members.objects.create(id = user.id, user_id=user.id)
+        member = Members.objects.create(user_id=user.id)
         member.save()
         return Response(serializer.data)
 
 class LoginAPIView(APIView):
     def post(self, request, format = None):
-        email = request.GET.get('email')
-        password = request.GET.get('password')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
 
         #find user using email
         user = MyUser.objects.filter(email = email).first()

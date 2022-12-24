@@ -32,21 +32,21 @@ services:
   #     - tinder-group5
   #   restart: unless-stopped
   
-  pgadmin:
-    container_name: pgadmin_container
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    volumes:
-       - pgadmin_data:/var/lib/pgadmin
+  #   pgadmin:
+  #     container_name: pgadmin_container
+  #     image: dpage/pgadmin4
+  #     environment:
+  #       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+  #       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+  #       PGADMIN_CONFIG_SERVER_MODE: 'False'
+  #     volumes:
+  #        - pgadmin_data:/var/lib/pgadmin
 
-    ports:
-      - "${PGADMIN_PORT:-5050}:80"
-    networks:
-      - tinder-group5
-    restart: unless-stopped
+  #     ports:
+  #       - "${PGADMIN_PORT:-5050}:80"
+  #     networks:
+  #       - tinder-group5
+  #     restart: unless-stopped
 
   stripe-cli:
       image: stripe/stripe-cli

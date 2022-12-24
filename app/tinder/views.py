@@ -31,7 +31,7 @@ class BlockAPI(APIView):
         """
         print(request)
         reactor_id = JWTHandler.get_current_user(request.COOKIES)
-        receiver_id = request.GET.get("receiver_id", "")
+        receiver_id = request.POST.get("receiver_id", "")
         type = ReactionType.BLOCK
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
@@ -133,8 +133,8 @@ class ChatAPI(APIView):
         """
         
         sender_id = JWTHandler.get_current_user(request.COOKIES) 
-        recipient_id = request.GET.get("recipient_id", "")
-        message = request.GET.get("message", "")
+        recipient_id = request.POST.get("recipient_id", "")
+        message = request.POST.get("message", "")
         send_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         try:
@@ -189,7 +189,7 @@ class SuperLikeAPI(APIView):
      
         print(request)
         reactor_id = JWTHandler.get_current_user(request.COOKIES) 
-        receiver_id = request.GET.get("receiver_id", "")
+        receiver_id = request.POST.get("receiver_id", "")
         type = ReactionType.SUPER_LIKE
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
@@ -249,7 +249,7 @@ class NoMatchAPI(APIView):
         
         print(request)
         reactor_id = JWTHandler.get_current_user(request.COOKIES) 
-        receiver_id = request.GET.get("receiver_id", "")
+        receiver_id = request.POST.get("receiver_id", "")
         type = ReactionType.NO_MATCH
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
@@ -310,7 +310,7 @@ class MembersLikedAPI(APIView):
         
         print(request)
         reactor_id = JWTHandler.get_current_user(request.COOKIES) 
-        receiver_id = request.GET.get("receiver_id", "")
+        receiver_id = request.POST.get("receiver_id", "")
         type = ReactionType.LIKE
         issued_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         # print(account_reaction_data)
