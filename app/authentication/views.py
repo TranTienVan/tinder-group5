@@ -1,5 +1,4 @@
 from django.shortcuts import render
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import MyUserSerializer
@@ -9,17 +8,16 @@ from .handlers import JWTHandler
 from tinder_profile.models import Members, MembersInfo
 import os 
 from django.http.request import HttpRequest
+
 JWT_COOKIE = os.environ.get("JWT_COOKIE")
 
-class registerAPIView(APIView):
+class RegisterAPIView(APIView):
     def post(self, request: HttpRequest, format = None):
-    
         serializer = MyUserSerializer(data = request.data)
-        serializer.is_valid(raise_exception = True)   #if anything not valid, raise exception
+        serializer.is_valid(raise_exception = True)
         serializer.save()
+
         user = MyUser.objects.filter(id = serializer.data['id']).first()
-        
-        
         member = Members.objects.create(user_id=user.id)
         member.save()
         member_info = MembersInfo.objects.create(user_id = user.id, avatar_url = "uploads/default.jpg")
@@ -31,7 +29,7 @@ class LoginAPIView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
         print(email, password)
-        #find user using email
+
         user = MyUser.objects.filter(email = email).first()
 
         if user is None:
@@ -52,17 +50,6 @@ class LoginAPIView(APIView):
         }
 
         return response
-
-
-# get user using cookie
-class UserView(APIView):
-    def get(self, request, format = None):
-        id = JWTHandler.get_current_user(request.COOKIES)
-        
-        user = MyUser.objects.filter(id = id).first()
-        serializer = MyUserSerializer(user)
-
-        return Response(serializer.data)
 
 class LogoutView(APIView):
     def post(self, request, format = None):

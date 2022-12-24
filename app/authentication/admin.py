@@ -25,3 +25,4 @@ class MyUserAdmin(UserAdmin):
 
 
 admin.site.register(MyUser, MyUserAdmin)
+admin.site.site_header = 'Wanna Date Administration'

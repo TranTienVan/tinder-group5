@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     #library
     "rest_framework",
+    'simpleui',
 
     #default
     "django.contrib.admin",

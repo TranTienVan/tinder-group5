@@ -4,11 +4,8 @@ from PIL import Image
 from django.db import models
 from authentication.models import MyUser
 from django.core.files import File
+from django.utils import timezone
 
-
-class PremiumType:
-    NORMAL = 1
-    PREMIUM = 2
 
 # Create your models here
 class Memberships(models.Model):
@@ -40,7 +37,19 @@ class Members(models.Model):
 
     group_id = models.ForeignKey(Memberships, on_delete=models.CASCADE, null=True) # not null
 
+class AccountType:
+    NORMAL = 1
+    PREMIUM = 2
+    
+    @staticmethod
+    def get_account_type(id):
+        """ Returns account's type """
+        member = Members.objects.get(user_id = id)
 
+        if member.membership_date is None or timezone.now() > member.membership_date:
+            return AccountType.NORMAL
+
+        return AccountType.PREMIUM
 
 class MembersSettings(models.Model):
     user = models.OneToOneField(Members, on_delete= models.CASCADE, primary_key=True)
