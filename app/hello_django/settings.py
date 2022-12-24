@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 
     #app
+    "admin_portal",
     "authentication",
     "tinder",
     "tinder_profile"
@@ -146,3 +147,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Authentication model
 AUTH_USER_MODEL = 'authentication.MyUser'
+
+SIMPLEUI_CONFIG = {
+    'system_keep': False,
+    'menus': [{
+        'name': 'User Manager',
+        'icon': 'fas fa-users',
+        'url': '/admintinder_profile/members/'
+    }, {
+        'app': 'auth',
+        'name': 'Permission',
+        'icon': 'fas fa-user-shield',
+        'models': [{
+            'name': 'users',
+            'icon': 'fa fa-user',
+            'url': 'auth/user/'
+        }]
+    }, {
+        'name': 'Report Manager',
+        'icon': 'fas fa-file',
+        'url': '/admintinder_profile/members/'
+    }]
+}
+
+SIMPLEUI_HOME_INFO = False
+SIMPLEUI_LOGO = 'http://localhost:8000/static/logo.png'
+SIMPLEUI_INDEX  = 'http://localhost:8000/admin'
