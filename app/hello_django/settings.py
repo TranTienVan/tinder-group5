@@ -172,5 +172,5 @@ SIMPLEUI_CONFIG = {
 }
 
 SIMPLEUI_HOME_INFO = False
-SIMPLEUI_LOGO = 'http://localhost:8000/static/logo.png'
-SIMPLEUI_INDEX  = 'http://localhost:8000/admin'
+SIMPLEUI_LOGO = '/static/logo.png'
+SIMPLEUI_INDEX  = '/admin'
