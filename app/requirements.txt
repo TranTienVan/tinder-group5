@@ -33,3 +33,5 @@ txaio
 typing_extensions
 tzdata
 zope.interface
+django-simpleui
+django-cors-headers
