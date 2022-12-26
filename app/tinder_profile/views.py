@@ -22,6 +22,7 @@ import datetime
 from django.utils import timezone
 from django.forms.models import model_to_dict
 now = timezone.now()
+from django.views.decorators.csrf import csrf_exempt
 
 
 def hello_world(request):
@@ -250,9 +251,11 @@ static_dir = str(os.path.abspath(os.path.join(
 #? PAYMENT AND UPGRADE TO PREMIUM API
 
 # @app.route('/upgrade', methods=['GET'])
+@csrf_exempt 
 def get_example(request):
-    # id =  JWTHandler.get_current_user(request.COOKIES)``
-    id = 2 ##// TEST
+    id =  JWTHandler.get_current_user(request.COOKIES)
+    print(id)
+   
     try:
         member = Members.objects.get(user_id = id)
         if member.membership_date is None or timezone.now()> member.membership_date:
