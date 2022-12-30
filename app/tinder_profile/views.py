@@ -33,6 +33,7 @@ class MembersInforAPI(APIView):
     def get(self, request: HttpRequest):
         try: 
            
+            print('Cookie:',request.COOKIES)
             
             user_id = request.GET.get("user_id")
             latest_user_id = request.GET.get("latest")
@@ -77,6 +78,7 @@ class MembersInforAPI(APIView):
             # Get user with specific id
             print(user_id)
             if not user_id:
+                print("2:",request.COOKIES)
                 id =  JWTHandler.get_current_user(request.COOKIES) 
                 user = MyUser.objects.filter(id = id).first()
                             

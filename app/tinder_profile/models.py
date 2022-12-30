@@ -62,6 +62,7 @@ class MembersSettings(models.Model):
 class MembersInfo(models.Model):
     user = models.OneToOneField(Members, on_delete= models.CASCADE, primary_key=True)
     avatar_url =  models.ImageField(upload_to='uploads/', blank=True, null=True)
+    header_url =  models.ImageField(upload_to='uploads/', blank=True, null=True)
     about_me = models.TextField(blank=True, null=True)
     birthday = models.DateField(blank=True, null=True,auto_now_add=True)
     is_female = models.BooleanField(blank=True, null=True, default=False)
@@ -74,6 +75,29 @@ class MembersInfo(models.Model):
     hobby = models.CharField(max_length=1024, blank=True, null=True)
     company = models.CharField(max_length=1024, blank=True, null=True)
     school = models.CharField(max_length=1024, blank=True, null=True)
+
+    # def get_header_url(self):
+    #     if(self.header_url):
+    #         return self.header_url
+    #     else:
+    #         if self.avatar_url:
+    #             self.header_url = self.make_header(self.avatar_url)
+    #             self.save()
+
+    #             return self.header_url
+    #         else:
+    #             return ''
+    # def make_header(self, image, size = (300, 300)):
+    #     img = Image.open(image)
+    #     img.convert('RGB')
+    #     img.thumbnail(size)
+
+    #     header_io = BytesIO()
+    #     img.save(header_io, 'JPEG', quality = 85)
+
+    #     header = File(header_io, name=image.name)
+    #     return header
+
 
 class MembersImages(models.Model):
     image_id = models.AutoField(primary_key=True)

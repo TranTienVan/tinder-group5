@@ -6,7 +6,25 @@ class MembersInfoSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField()
     class Meta:
         model = MembersInfo
-        fields = '__all__'
+        # fields = '__all__'
+        fields = (
+            "user",
+            "user_name",
+            "avatar_url",
+            "header_url",
+            "about_me",
+            "birthday",
+            "is_female",
+            "address",
+            "street",
+            "district",
+            "city",
+            "country",
+            "language",
+            "hobby",
+            "company",
+            "school"
+        )
         extra_kwargs = {'user': {'required': False}}
     
     def get_user_name(self, obj):
@@ -53,6 +71,7 @@ class MembersSerializer(serializers.ModelSerializer):
             "last_activity",
             "last_edit",
             "avatar_url",
+            "get_header_url",
             "approved_profile",
             "account_status"
         )
