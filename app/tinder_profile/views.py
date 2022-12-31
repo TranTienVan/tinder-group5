@@ -58,7 +58,7 @@ def get_save_image(image_url):
     file_object = File(img_temp, fss.get_available_name("user"))
 
     file = fss.save(file_object.name + '.png', file_object)
-    file_url = fss.url(file)
+    file_url = 'uploads/' + file_object.name + '.png'
 
     # response = requests.get(image_url)
     # image = Image.open(BytesIO(response.content))
