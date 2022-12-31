@@ -173,6 +173,10 @@ class MembersInforAPI(APIView):
                 user_info.avatar_url = get_save_image(request.data.get('avatar_url'))
             if request.data.get('header_url') is not None:
                 user_info.header_url = get_save_image(request.data.get('header_url'))
+            user_info.about_me = request.data.get('about_me')
+            user_info.birthday = request.data.get('birthday')
+            user_info.is_female = request.data.get('is_female')
+
             user_info.address = request.data.get('address')
             user_info.street = request.data.get('street')
             user_info.district = request.data.get('district')
