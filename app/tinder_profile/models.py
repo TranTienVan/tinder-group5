@@ -35,7 +35,7 @@ class Members(models.Model):
     approved_profile = models.IntegerField(null=True, blank=True)
     account_status = models.IntegerField(null=True, blank=True)
 
-    group_id = models.ForeignKey(Memberships, on_delete=models.CASCADE, null=True) # not null
+    group_id = models.ForeignKey(Memberships, on_delete=models.CASCADE, null=True,to_field='group_id', default = 1) # not null
 
 class AccountType:
     NORMAL = 1
@@ -78,14 +78,14 @@ class MembersInfo(models.Model):
     company = models.CharField(max_length=1024, blank=True, null=True)
     school = models.CharField(max_length=1024, blank=True, null=True)
 
-    def get_avatar_url(self):
-        if(self.avatar_url):
-            return 'http://127.0.0.1:8000'+self.avatar_url.url
-        return ''
-    def get_header_url(self):
-        if(self.header_url):
-            return 'http://127.0.0.1:8000'+self.header_url.url
-        return ''
+    # def get_avatar_url(self):
+    #     if(self.avatar_url):
+    #         return 'http://127.0.0.1:8000'+self.avatar_url.url
+    #     return ''
+    # def get_header_url(self):
+    #     if(self.header_url):
+    #         return 'http://127.0.0.1:8000'+self.header_url.url
+    #     return ''
 
 
     # def get_header_url(self):

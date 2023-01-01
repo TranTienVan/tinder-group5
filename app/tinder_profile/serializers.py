@@ -2,8 +2,11 @@ from rest_framework import serializers
 
 from .models import  MembersInfo, MembersSettings, Members, Memberships
 
+from django.utils import timezone
+
 class MembersInfoSerializer(serializers.ModelSerializer):
     user_name = serializers.SerializerMethodField()
+    group_id = serializers.SerializerMethodField()
     class Meta:
         model = MembersInfo
         # fields = '__all__'
@@ -23,13 +26,22 @@ class MembersInfoSerializer(serializers.ModelSerializer):
             "language",
             "hobby",
             "company",
-            "school"
+            "school",
+            "group_id"
         )
         extra_kwargs = {'user': {'required': False}}
     
     def get_user_name(self, obj):
         return obj.user.user_name
+    def get_group_id(self, obj):
+        if obj.user.membership_date is None or timezone.now()> obj.user.membership_date:
+            obj.user.group_id = Memberships.objects.get(group_id = 1)
+        else:
+            obj.user.group_id = Memberships.objects.get(group_id = 2)
+        obj.user.save()
+        return obj.user.group_id.group_id
 
+        
 class MembersSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = MembersSettings
