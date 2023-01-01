@@ -7,6 +7,7 @@ from django.http.response import JsonResponse
 from django.http.request import HttpRequest
 from .serializers import ReactionsSerializer, ConnectionsSerializer, MessagesSerializer
 from .models import Reactions, Connections, Messages, ReactionType
+from tinder_profile.models import Members
 from datetime import datetime
 from django.forms.models import model_to_dict
 import json
@@ -196,9 +197,16 @@ class SuperLikeAPI(APIView):
         # account_reaction_data["created_at"] = datetime.now().strftime("%Y-%d-%m %H:%M:%S.%f")
         # account_reaction_data["deleted_at"] = None
         # print(account_reaction_data)
+        member = Members(user_id = reactor_id)
+        print(member.membership_date)
+        if not member.membership_date or member.membership_date < datetime.now():
+            response = "Only premium account can use superlike"
+            return JsonResponse(response, safe=False)
         
-        print("Hello")
         print({"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
+        
+        
+        
         reaction_serializer=ReactionsSerializer(data={"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
         
         connection_serializer = ConnectionsSerializer(data={"user_id_1": reactor_id, "user_id_2": receiver_id, "created_date": issued_date})
@@ -222,6 +230,14 @@ class SuperLikeAPI(APIView):
     
     def delete(self, request: HttpRequest, _reactor_id = 0, _receiver_id = 0):
         rector_id = JWTHandler.get_current_user(request.COOKIES) 
+        member = Members(user_id = rector_id)
+        print(member.membership_date)
+        if not member.membership_date or member.membership_date < datetime.now():
+            response = "Only premium account can use superlike"
+            return JsonResponse(response, safe=False)
+        
+        
+        
         reactions = Reactions.objects.get(reactor_id = rector_id, receiver_id=_receiver_id)
         connections = Connections.objects.get(user_id_1 = rector_id, user_id_2 = _receiver_id)
         
@@ -331,14 +347,20 @@ class MembersLikedAPI(APIView):
         print({"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
         reaction_serializer=ReactionsSerializer(data={"reactor_id": reactor_id, "receiver_id": receiver_id, "issued_date": issued_date,"type": type})
         
-        
+        connection_serializer = ConnectionsSerializer(data={"user_id_1": reactor_id, "user_id_2": receiver_id, "created_date": issued_date})        
         
         
         if reaction_serializer.is_valid():
             response = reaction_serializer.save()
             
+            if connection_serializer.is_valid():
+                print("Saved connections")
+                response2 = connection_serializer.save()
             
-            return JsonResponse(reaction_serializer.data, content_type="application/json")   
+            
+            response = {"reactions": reaction_serializer.data, "connections": connection_serializer.data}
+            
+            return JsonResponse(response, content_type="application/json")   
         
         return JsonResponse("Invalid parameters for userlike", safe=False) 
     
@@ -347,10 +369,15 @@ class MembersLikedAPI(APIView):
             
         
         reactions = Reactions.objects.get(reactor_id=reactor_id, receiver_id=_receiver_id)
+        connections = Connections.objects.get(user_id_1 = reactor_id, user_id_2 = _receiver_id)
         
+            
         reactions.delete()
+        connections.delete()
         
-        return JsonResponse(model_to_dict(reactions))
+        response = {"reactions": model_to_dict(reactions), "connections": model_to_dict(connections)}
+        
+        return JsonResponse(response)
     
     
     

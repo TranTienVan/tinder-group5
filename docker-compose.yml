@@ -12,6 +12,32 @@ services:
     networks:
       - tinder-group5
   
+
+  # vue:
+  #   build: ./wanna-date-web    
+  #   volumes:
+  #     - ./wanna-date-web/:/usr/src/frontend-app/
+  #     - ./data/:/usr/src/data/
+  #   depends_on:
+  #     - web
+  #   ports:
+  #     - 5173:5173
+
+  #   env_file:
+  #     - ./.env.dev-remote
+  #   networks:
+  #     - tinder-group5
+
+
+  # nginx:
+  #   build:
+  #     context: .
+  #     dockerfile: nginx/Dockerfile
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - vue
+  #     - web
   # postgres:
   #   container_name: postgres_container
   #   image: postgres:13
