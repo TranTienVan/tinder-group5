@@ -317,8 +317,7 @@ class MembersLikedAPI(APIView):
         reactions = list(Reactions.objects.filter(reactor_id= reactor_id, type=ReactionType.LIKE).values())
         
 
-        reactions_superlike = list(Reactions.objects.filter(reactor_id= reactor_id, type=ReactionType.LIKE).values())
-        reactions.extend(reactions_superlike)
+        reactions_superlike = list(Reactions.objects.filter(reactor_id= reactor_id, type=ReactionType.SUPER_LIKE).values())
         reactions.extend(reactions_superlike)
             
         print(reactions)
