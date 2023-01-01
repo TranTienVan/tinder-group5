@@ -32,45 +32,47 @@ from hello_django.settings import MEDIA_ROOT
 def hello_world(request):
     return HttpResponse("<h1>Hello world</h1>")
         
-def get_save_image(image_url):
-    print(image_url)
-    inStream = urllib2.urlopen(image_url)
-    print("Done")
+# def get_save_image(image_url):
+#     print(image_url)
+#     inStream = urllib2.urlopen(image_url)
+#     print("Done")
 
-    parser = ImageFile.Parser()
-    while True:
-        s = inStream.read(1024)
-        if not s:
-            break
-        parser.feed(s)
+#     parser = ImageFile.Parser()
+#     while True:
+#         s = inStream.read(1024)
+#         if not s:
+#             break
+#         parser.feed(s)
 
-    inImage = parser.close()
-    # convert to RGB to avoid error with png and tiffs
-    if inImage.mode != "RGB":
-        inImage = inImage.convert("RGB")
+#     inImage = parser.close()
+#     # convert to RGB to avoid error with png and tiffs
+#     if inImage.mode != "RGB":
+#         inImage = inImage.convert("RGB")
 
-    img_temp = BytesIO()
-    inImage.save(img_temp, 'PNG')
-    img_temp.seek(0)
+#     img_temp = BytesIO()
+#     inImage.save(img_temp, 'PNG')
+#     img_temp.seek(0)
     
-    fss = FileSystemStorage()
-    fss.location = 'mediafiles/uploads'
-    file_object = File(img_temp, fss.get_available_name("user"))
+#     fss = FileSystemStorage()
+#     fss.location = 'mediafiles/uploads'
+#     file_object = File(img_temp, fss.get_available_name("user"))
 
-    file = fss.save(file_object.name + '.png', file_object)
-    file_url = 'uploads/' + file_object.name + '.png'
+#     file = fss.save(file_object.name + '.png', file_object)
+#     file_url = fss.url(file)
+#     file_url = file_url.split('/')
+#     file_url = 'uploads/' + file_url[-1]
 
-    # response = requests.get(image_url)
-    # image = Image.open(BytesIO(response.content))
+#     # response = requests.get(image_url)
+#     # image = Image.open(BytesIO(response.content))
     
-    # print("here1")
-    # name = fss.get_available_name("user")
-    # print(name)
-    # file = fss.save(name,image)
-    # print("here")
-    # file_url = fss.url(file)
-    print(file_url)
-    return file_url
+#     # print("here1")
+#     # name = fss.get_available_name("user")
+#     # print(name)
+#     # file = fss.save(name,image)
+#     # print("here")
+#     # file_url = fss.url(file)
+#     print(file_url)
+#     return file_url
 
 class MembersInforAPI(APIView):
     def get(self, request: HttpRequest):
@@ -169,10 +171,12 @@ class MembersInforAPI(APIView):
             
             print(request.data.get('address'))
 
-            if( request.data.get('avatar_url') is not None):
-                user_info.avatar_url = get_save_image(request.data.get('avatar_url'))
-            if request.data.get('header_url') is not None:
-                user_info.header_url = get_save_image(request.data.get('header_url'))
+            # if( request.data.get('avatar_url') is not None):
+            #     user_info.avatar_url = get_save_image(request.data.get('avatar_url'))
+            # if request.data.get('header_url') is not None:
+            #     user_info.header_url = get_save_image(request.data.get('header_url'))
+            user_info.avatar_url = request.data.get('avatar_url')
+            user_info.header_url = request.data.get('header_url')
             user_info.about_me = request.data.get('about_me')
             user_info.birthday = request.data.get('birthday')
             user_info.is_female = request.data.get('is_female')

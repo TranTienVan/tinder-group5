@@ -61,8 +61,10 @@ class MembersSettings(models.Model):
 
 class MembersInfo(models.Model):
     user = models.OneToOneField(Members, on_delete= models.CASCADE, primary_key=True)
-    avatar_url =  models.ImageField(upload_to='uploads/', blank=True, null=True)
-    header_url =  models.ImageField(upload_to='uploads/', blank=True, null=True)
+    # avatar_url =  models.ImageField(upload_to='uploads/', blank=True, null=True)
+    # header_url =  models.ImageField(upload_to='uploads/', blank=True, null=True)
+    avatar_url = models.TextField(blank= True, null = True, max_length=1024)
+    header_url = models.TextField(blank= True, null = True, max_length=1024)
     about_me = models.TextField(blank=True, null=True)
     birthday = models.DateField(blank=True, null=True,auto_now_add=True)
     is_female = models.BooleanField(blank=True, null=True, default=False)
@@ -75,6 +77,16 @@ class MembersInfo(models.Model):
     hobby = models.CharField(max_length=1024, blank=True, null=True)
     company = models.CharField(max_length=1024, blank=True, null=True)
     school = models.CharField(max_length=1024, blank=True, null=True)
+
+    def get_avatar_url(self):
+        if(self.avatar_url):
+            return 'http://127.0.0.1:8000'+self.avatar_url.url
+        return ''
+    def get_header_url(self):
+        if(self.header_url):
+            return 'http://127.0.0.1:8000'+self.header_url.url
+        return ''
+
 
     # def get_header_url(self):
     #     if(self.header_url):
