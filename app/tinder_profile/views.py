@@ -141,17 +141,20 @@ class MembersInforAPI(APIView):
                     return HttpResponse(serializer.errors)
             else:
                 try:
-                    user_info = MembersInfo.objects.get(user_id = user_id)
-                    obj_dict = model_to_dict(user_info)
-                    # Get the URL of the image file
-                    # image_url = obj_dict['avatar_url'].url
-                    # # Include the image URL in the dictionary
-                    # obj_dict['avatar_url'] = image_url
-                    
-                    return JsonResponse(obj_dict, safe=False)
+                    user_info, created = MembersInfo.objects.get_or_create(user_id = user_id)
+                
+                    serializer_context = {
+                        'request': request,
+                    }
+                    serializer = MembersInfoSerializer(user_info, serializer_context)
+                    if serializer.is_valid():
+                        return Response(serializer.data)
+                    else: 
+                        print(serializer.errors)
+                        return HttpResponse(serializer.errors)
                 except MembersInfo.DoesNotExist: 
-                    print("Error") 
-                    return HttpResponseNotFound(f"User With ID:{user_id} Does Not Exist!")
+                        print("Error") 
+                        return HttpResponseNotFound(f"User With ID:{user_id} Does Not Exist!")
                 
 
         except IntegrityError  as e:
