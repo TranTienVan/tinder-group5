@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 from django.db.models import Q
 from authentication.handlers import JWTHandler
 from django.db.models import Q, OuterRef
+from django.utils import timezone
 # like : 1
 # nomatch : 2
 # super_like : 3
@@ -199,7 +200,7 @@ class SuperLikeAPI(APIView):
         # print(account_reaction_data)
         member = Members(user_id = reactor_id)
         print(member.membership_date)
-        if not member.membership_date or member.membership_date < datetime.now():
+        if not member.membership_date or member.membership_date < timezone.now():
             response = "Only premium account can use superlike"
             return JsonResponse(response, safe=False)
         
@@ -232,7 +233,7 @@ class SuperLikeAPI(APIView):
         rector_id = JWTHandler.get_current_user(request.COOKIES) 
         member = Members(user_id = rector_id)
         print(member.membership_date)
-        if not member.membership_date or member.membership_date < datetime.now():
+        if not member.membership_date or member.membership_date < timezone.now():
             response = "Only premium account can use superlike"
             return JsonResponse(response, safe=False)
         
