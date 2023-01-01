@@ -23,5 +23,7 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN chmod +x setup.sh
 
+EXPOSE 8000
+
 # run entrypoint.sh
 CMD ["sh", "setup.sh"]
