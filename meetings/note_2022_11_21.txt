@@ -16,7 +16,7 @@ Van:
 Trong: 
     account_setup DONE
     xoa tai khoan DONE
-    upgrade_to premium account NOT
+    upgrade_to premium account 
     cai dat tim kiem DONE
 
 

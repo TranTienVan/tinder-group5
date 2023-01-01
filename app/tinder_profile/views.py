@@ -1,6 +1,4 @@
 from django.shortcuts import render
-from django.contrib.auth import logout 
-from rest_framework.request import Request
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from .models import  Members, MembersInfo, MembersSettings
 from .serializers import  MembersInfoSerializer, MembersSettingsSerializer
@@ -22,16 +20,65 @@ import datetime
 from django.utils import timezone
 from django.forms.models import model_to_dict
 now = timezone.now()
-
+from django.views.decorators.csrf import csrf_exempt
+from django.core.files.storage import FileSystemStorage
+from PIL import Image
+from io import BytesIO
+import urllib.request as urllib2
+from PIL import Image, ImageFile    
+from django.core.files import File
+from hello_django.settings import MEDIA_ROOT
 
 def hello_world(request):
     return HttpResponse("<h1>Hello world</h1>")
         
+# def get_save_image(image_url):
+#     print(image_url)
+#     inStream = urllib2.urlopen(image_url)
+#     print("Done")
+
+#     parser = ImageFile.Parser()
+#     while True:
+#         s = inStream.read(1024)
+#         if not s:
+#             break
+#         parser.feed(s)
+
+#     inImage = parser.close()
+#     # convert to RGB to avoid error with png and tiffs
+#     if inImage.mode != "RGB":
+#         inImage = inImage.convert("RGB")
+
+#     img_temp = BytesIO()
+#     inImage.save(img_temp, 'PNG')
+#     img_temp.seek(0)
+    
+#     fss = FileSystemStorage()
+#     fss.location = 'mediafiles/uploads'
+#     file_object = File(img_temp, fss.get_available_name("user"))
+
+#     file = fss.save(file_object.name + '.png', file_object)
+#     file_url = fss.url(file)
+#     file_url = file_url.split('/')
+#     file_url = 'uploads/' + file_url[-1]
+
+#     # response = requests.get(image_url)
+#     # image = Image.open(BytesIO(response.content))
+    
+#     # print("here1")
+#     # name = fss.get_available_name("user")
+#     # print(name)
+#     # file = fss.save(name,image)
+#     # print("here")
+#     # file_url = fss.url(file)
+#     print(file_url)
+#     return file_url
 
 class MembersInforAPI(APIView):
     def get(self, request: HttpRequest):
         try: 
            
+            print('Cookie:',request.COOKIES)
             
             user_id = request.GET.get("user_id")
             latest_user_id = request.GET.get("latest")
@@ -75,7 +122,9 @@ class MembersInforAPI(APIView):
             
             # Get user with specific id
             print(user_id)
+            print("Here")
             if not user_id:
+                print("2:",request.COOKIES)
                 id =  JWTHandler.get_current_user(request.COOKIES) 
                 user = MyUser.objects.filter(id = id).first()
                             
@@ -92,16 +141,20 @@ class MembersInforAPI(APIView):
                     return HttpResponse(serializer.errors)
             else:
                 try:
-                    user_info = MembersInfo.objects.get(user_id = user_id)
-                    obj_dict = model_to_dict(user_info)
-                    # Get the URL of the image file
-                    image_url = obj_dict['avatar_url'].url
-                    # Include the image URL in the dictionary
-                    obj_dict['avatar_url'] = image_url
-                    
-                    return JsonResponse(obj_dict, safe=False)
-                except: 
-                     return HttpResponseNotFound(f"User With ID:{user_id} Does Not Exist!")
+                    user_info, created = MembersInfo.objects.get_or_create(user_id = user_id)
+                
+                    serializer_context = {
+                        'request': request,
+                    }
+                    serializer = MembersInfoSerializer(user_info, serializer_context)
+                    if serializer.is_valid():
+                        return Response(serializer.data)
+                    else: 
+                        print(serializer.errors)
+                        return HttpResponse(serializer.errors)
+                except MembersInfo.DoesNotExist: 
+                        print("Error") 
+                        return HttpResponseNotFound(f"User With ID:{user_id} Does Not Exist!")
                 
 
         except IntegrityError  as e:
@@ -122,6 +175,17 @@ class MembersInforAPI(APIView):
             user_info, created = MembersInfo.objects.get_or_create(user_id = id)
             
             print(request.data.get('address'))
+
+            # if( request.data.get('avatar_url') is not None):
+            #     user_info.avatar_url = get_save_image(request.data.get('avatar_url'))
+            # if request.data.get('header_url') is not None:
+            #     user_info.header_url = get_save_image(request.data.get('header_url'))
+            user_info.avatar_url = request.data.get('avatar_url')
+            user_info.header_url = request.data.get('header_url')
+            user_info.about_me = request.data.get('about_me')
+            user_info.birthday = request.data.get('birthday')
+            user_info.is_female = request.data.get('is_female')
+
             user_info.address = request.data.get('address')
             user_info.street = request.data.get('street')
             user_info.district = request.data.get('district')
@@ -250,9 +314,11 @@ static_dir = str(os.path.abspath(os.path.join(
 #? PAYMENT AND UPGRADE TO PREMIUM API
 
 # @app.route('/upgrade', methods=['GET'])
+@csrf_exempt 
 def get_example(request):
-    # id =  JWTHandler.get_current_user(request.COOKIES)``
-    id = 2 ##// TEST
+    id =  JWTHandler.get_current_user(request.COOKIES)
+    print(id)
+   
     try:
         member = Members.objects.get(user_id = id)
         if member.membership_date is None or timezone.now()> member.membership_date:
