@@ -122,6 +122,7 @@ class MembersInforAPI(APIView):
             
             # Get user with specific id
             print(user_id)
+            print("Here")
             if not user_id:
                 print("2:",request.COOKIES)
                 id =  JWTHandler.get_current_user(request.COOKIES) 
@@ -143,13 +144,14 @@ class MembersInforAPI(APIView):
                     user_info = MembersInfo.objects.get(user_id = user_id)
                     obj_dict = model_to_dict(user_info)
                     # Get the URL of the image file
-                    image_url = obj_dict['avatar_url'].url
-                    # Include the image URL in the dictionary
-                    obj_dict['avatar_url'] = image_url
+                    # image_url = obj_dict['avatar_url'].url
+                    # # Include the image URL in the dictionary
+                    # obj_dict['avatar_url'] = image_url
                     
                     return JsonResponse(obj_dict, safe=False)
-                except: 
-                     return HttpResponseNotFound(f"User With ID:{user_id} Does Not Exist!")
+                except MembersInfo.DoesNotExist: 
+                    print("Error") 
+                    return HttpResponseNotFound(f"User With ID:{user_id} Does Not Exist!")
                 
 
         except IntegrityError  as e:
