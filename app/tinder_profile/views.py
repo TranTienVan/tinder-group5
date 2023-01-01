@@ -440,8 +440,10 @@ def webhook_received(request):
             today = timezone.now()
             if(amount_total/100 ==BASIC_PRICE):
                 member.membership_date = today + datetime.timedelta(days=BASIC_DURATION)
+               
             else:
                 member.membership_date = today + datetime.timedelta(days=PRO_DURATION)
+            member.group_id = 2 # PREMIUM
             member.save()
         except Members.DoesNotExist:
             #Handle when member type wrong email when checkout
