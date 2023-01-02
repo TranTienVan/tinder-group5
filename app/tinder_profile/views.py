@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
-from .models import  Members, MembersInfo, MembersSettings
+from .models import  Members, MembersInfo, MembersSettings, Memberships
 from .serializers import  MembersInfoSerializer, MembersSettingsSerializer
 from rest_framework.response import Response
 from django.http.request import HttpRequest
@@ -296,6 +296,7 @@ BASIC_PRICE = 20
 PRO_PRICE = 90
 BASIC_DURATION = 30
 PRO_DURATION = 180
+CLIENT_DOMAIN = ''
 
 # Setup Stripe python client library
 load_dotenv(find_dotenv())
@@ -317,11 +318,11 @@ static_dir = str(os.path.abspath(os.path.join(
 @csrf_exempt 
 def get_example(request):
     id =  JWTHandler.get_current_user(request.COOKIES)
-    print(id)
-   
+    CLIENT_DOMAIN = request.get_host()
+    
     try:
         member = Members.objects.get(user_id = id)
-        if member.membership_date is None or timezone.now()> member.membership_date:
+        if member.membership_date is None or timezone.now().date()> member.membership_date:
              return render(request, 'index.html')
         else:
             return HttpResponse("<h1>You are already a premium member! Thanks you for supporting</h1>")
@@ -392,7 +393,9 @@ def customer_portal(request):
 
     # This is the URL to which the customer will be redirected after they are
     # done managing their billing with the portal.
-    return_url =DOMAIN + '/api'
+    return_url ='http://127.0.0.1:5173/'
+    # return_url =CLIENT_DOMAIN
+
 
     session = stripe.billing_portal.Session.create(
         customer=checkout_session.customer,
@@ -437,13 +440,14 @@ def webhook_received(request):
         try:
             user = MyUser.objects.get(email=customer_email)
             member, created = Members.objects.get_or_create(user  = user)
+            print(member.user_name)
             today = timezone.now()
             if(amount_total/100 ==BASIC_PRICE):
                 member.membership_date = today + datetime.timedelta(days=BASIC_DURATION)
                
             else:
                 member.membership_date = today + datetime.timedelta(days=PRO_DURATION)
-            member.group_id = 2 # PREMIUM
+            member.group_id =Memberships.objects.get(group_id = 2)  # PREMIUM
             member.save()
         except Members.DoesNotExist:
             #Handle when member type wrong email when checkout
