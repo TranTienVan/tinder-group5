@@ -349,7 +349,7 @@ def get_checkout_session(request):
 
 # @app.route('/create-checkout-session', methods=['POST'])
 def create_checkout_session(request):
-    price = request.data.get('priceId')
+    price = request.POST.get('priceId')
     domain_url = DOMAIN + '/api/profile'
 
     try:
@@ -387,7 +387,7 @@ def get_cancel(request):
 def customer_portal(request):
     # For demonstration purposes, we're using the Checkout session to retrieve the customer ID.
     # Typically this is stored alongside the authenticated user in your database.
-    checkout_session_id = request.data.get('sessionId')
+    checkout_session_id = request.POST.get('sessionId')
     checkout_session = stripe.checkout.Session.retrieve(checkout_session_id)
 
     # This is the URL to which the customer will be redirected after they are
