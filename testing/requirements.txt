@@ -1,0 +1,5 @@
+pytest
+pandas
+selenium
+webdriver-manager
+python-dotenv
