@@ -200,7 +200,7 @@ class SuperLikeAPI(APIView):
         # print(account_reaction_data)
         member = Members(user_id = reactor_id)
         print(member.membership_date)
-        if not member.membership_date or member.membership_date < timezone.now():
+        if not member.membership_date or member.membership_date < timezone.now().date():
             response = "Only premium account can use superlike"
             return JsonResponse(response, safe=False)
         
@@ -233,7 +233,7 @@ class SuperLikeAPI(APIView):
         rector_id = JWTHandler.get_current_user(request.COOKIES) 
         member = Members(user_id = rector_id)
         print(member.membership_date)
-        if not member.membership_date or member.membership_date < timezone.now():
+        if not member.membership_date or member.membership_date < timezone.now().date():
             response = "Only premium account can use superlike"
             return JsonResponse(response, safe=False)
         

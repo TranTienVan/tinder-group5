@@ -34,7 +34,7 @@ class MembersInfoSerializer(serializers.ModelSerializer):
     def get_user_name(self, obj):
         return obj.user.user_name
     def get_group_id(self, obj):
-        if obj.user.membership_date is None or timezone.now()> obj.user.membership_date:
+        if obj.user.membership_date is None or timezone.now().date()> obj.user.membership_date:
             obj.user.group_id = Memberships.objects.get(group_id = 1)
         else:
             obj.user.group_id = Memberships.objects.get(group_id = 2)

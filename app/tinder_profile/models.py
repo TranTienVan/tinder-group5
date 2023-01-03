@@ -46,7 +46,7 @@ class AccountType:
         """ Returns account's type """
         member = Members.objects.get(user_id = id)
 
-        if member.membership_date is None or timezone.now() > member.membership_date:
+        if member.membership_date is None or timezone.now().date() > member.membership_date:
             return AccountType.NORMAL
 
         return AccountType.PREMIUM
