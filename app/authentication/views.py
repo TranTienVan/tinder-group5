@@ -20,7 +20,7 @@ class RegisterAPIView(APIView):
         user = MyUser.objects.filter(id = serializer.data['id']).first()
         member = Members.objects.create(user_id=user.id)
         member.save()
-        member_info = MembersInfo.objects.create(user_id = user.id, avatar_url = "uploads/default.jpg")
+        member_info = MembersInfo.objects.create(user_id = user.id, avatar_url = "https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png")
         member_info.save()
         return Response(serializer.data)
 
