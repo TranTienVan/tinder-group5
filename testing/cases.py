@@ -50,4 +50,52 @@ def login_case(driver: webdriver.Chrome, email, password):
     time.sleep(3)
     return driver.current_url
     
-    
+def register_fail_case(driver: webdriver.Chrome):
+    driver.get("http://localhost:5173/register")
+    time.sleep(0.5)
+    driver.find_element(By.CLASS_NAME, "el-button").click()
+    time.sleep(1)
+    return driver.current_url
+
+def logout_case(driver: webdriver.Chrome, email, password):
+    login_case(driver, email, password)
+    time.sleep(3)
+    driver.find_element(By.CLASS_NAME, "logout").click()
+    time.sleep(0.5)
+    return driver.current_url
+
+def update_profile_case(driver: webdriver.Chrome, email, password):
+    login_case(driver, email, password)
+
+    # update profile
+    time.sleep(5)
+    driver.find_element(By.CLASS_NAME, "material-symbols-rounded").click()
+    time.sleep(0.5)
+    tags = driver.find_elements(By.CLASS_NAME, "asterisk-left")
+    interest = str(random.randint(100, 99999))
+    tags[6].find_element(By.TAG_NAME, "input").clear()
+    time.sleep(0.5)
+    tags[6].find_element(By.TAG_NAME, "input").send_keys(interest)
+    time.sleep(0.5)
+    driver.find_element(By.CLASS_NAME, "is-plain").click()
+    time.sleep(2)
+    driver.refresh()
+    time.sleep(7)
+    tags = driver.find_elements(By.CLASS_NAME, "asterisk-left")
+    time.sleep(0.5)
+    assert tags[6].find_element(By.TAG_NAME, "input").get_attribute("value") == interest
+    return driver.current_url
+
+def chat_case(driver: webdriver.Chrome, email, password):
+    login_case(driver, email, password)
+    time.sleep(3)
+    driver.find_element(By.CLASS_NAME, "container").click()
+    time.sleep(0.5)
+    message = f"Hello {random.randint(1, 100000)}"
+    driver.find_element(By.TAG_NAME, "input").send_keys(message)
+    time.sleep(0.5)
+    driver.find_element(By.CLASS_NAME, "container__input-area__send-icon").click()
+    time.sleep(0.5)
+    tags = driver.find_elements(By.CLASS_NAME, "container-right-side")
+    assert tags[-1].find_element(By.CLASS_NAME, "container__message").text == message
+    return driver.current_url
