@@ -175,20 +175,23 @@ SIMPLEUI_CONFIG = {
     'menus': [{
         'name': 'User Manager',
         'icon': 'fas fa-users',
-        'url': '/admintinder_profile/members/'
-    }, {
-        'app': 'auth',
-        'name': 'Permission',
-        'icon': 'fas fa-user-shield',
         'models': [{
-            'name': 'users',
+            'name': 'User',
             'icon': 'fa fa-user',
-            'url': 'auth/user/'
+            'url': '/admintinder_profile/members/'
+        },{
+            'name': 'User Info',
+            'icon': 'fa fa-user',
+            'url': '/admintinder_profile/membersinfo/'
+        },{
+            'name': 'User Images',
+            'icon': 'fa fa-image',
+            'url': '/admintinder_profile/membersimages/'
         }]
     }, {
         'name': 'Report Manager',
         'icon': 'fas fa-file',
-        'url': '/admintinder_profile/members/'
+        'url': '/admintinder/reports/'
     }]
 }
 
