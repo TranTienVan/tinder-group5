@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from tinder.models import Reactions, Connections, Messages
+from tinder.models import Reactions, Connections, Messages, Reports
 
 
         
@@ -36,6 +36,21 @@ class MessagesSerializer(serializers.ModelSerializer):
             "recipient_id",
             "sender_id"
         )
+
+class ReportsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reports
+        fields = (
+            "report_id",
+            "reporter_id",
+            "violator_id",
+            "type",
+            "created_date",
+            "description",
+            "details_url",
+            "status"
+        )
+
 
 
 

@@ -22,7 +22,12 @@ class Memberships(models.Model):
     # Number of time remaining for this service
     
     enable = models.IntegerField(null=True)
-    
+    def __str__(self):
+        if self.group_id == 1:
+            return "Normal User"
+        else:
+            return "Premium User"
+
 class Members(models.Model):
     user = models.OneToOneField(MyUser, on_delete= models.CASCADE, primary_key=True)
     phone = models.CharField(max_length=12, blank=True, null=True)
@@ -36,6 +41,8 @@ class Members(models.Model):
     account_status = models.IntegerField(null=True, blank=True)
 
     group_id = models.ForeignKey(Memberships, on_delete=models.CASCADE, null=True,to_field='group_id', default = 1) # not null
+    def __str__(self):
+        return self.user.email
 
 class AccountType:
     NORMAL = 1
@@ -58,6 +65,9 @@ class MembersSettings(models.Model):
     min_match_age = models.IntegerField(null=True, blank=True)
     max_match_age = models.IntegerField(null=True, blank = True)
     visibility = models.IntegerField(null=True, blank = True)
+    def __str__(self):
+        return self.user.user
+    
 
 class MembersInfo(models.Model):
     user = models.OneToOneField(Members, on_delete= models.CASCADE, primary_key=True)
@@ -77,6 +87,8 @@ class MembersInfo(models.Model):
     hobby = models.CharField(max_length=1024, blank=True, null=True)
     company = models.CharField(max_length=1024, blank=True, null=True)
     school = models.CharField(max_length=1024, blank=True, null=True)
+    def __str__(self):
+        return self.user.user.email
 
     # def get_avatar_url(self):
     #     if(self.avatar_url):

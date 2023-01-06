@@ -8,7 +8,7 @@ from enum import IntEnum
 from tinder_profile.models import Members
 
     
-class ReactionType():
+class ReactionType:
     LIKE = 1
     NO_MATCH = 2
     SUPER_LIKE = 3
@@ -63,6 +63,28 @@ class Messages(models.Model):
         """
 
         return self.message    
+
+class ReportType:
+    SPAM = 0
+    FAKE_ACCOUNT = 1
+    REACTIONARY = 2
+    SEXUAL_HARASSMENT = 3
+    UNCATEGORY = 4
+
+class Reports(models.Model):
+    report_id = models.AutoField(primary_key=True)
+    
+    reporter_id = models.ForeignKey(Members, on_delete=models.CASCADE, null=False, related_name='reporter_id')    
+    violator_id = models.ForeignKey(Members, on_delete=models.CASCADE, null=False, related_name="violator_id")
+    
+    type = models.IntegerField()
+    created_date = models.DateTimeField(auto_now_add=True)
+    description = models.TextField(null=True)
+    details_url = models.TextField(blank= True, null = True, max_length=1024)
+    status = models.IntegerField()
+    
+    def __str__(self):
+        return str(self.report_id)
     
 
 
