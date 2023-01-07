@@ -5,6 +5,7 @@ import random
 
 def register_case(driver: webdriver.Chrome):
     driver.get("http://localhost:5173/register")
+    time.sleep(0.5)
     
     full_name = f"trantienvan-{random.randint(1, 10000000)}"
     email = full_name + "@gmail.com"
@@ -41,6 +42,7 @@ def register_case(driver: webdriver.Chrome):
 
 def login_case(driver: webdriver.Chrome, email, password):
     driver.get("http://localhost:5173/login")
+    time.sleep(0.5)
     tags = driver.find_elements(By.CLASS_NAME, "asterisk-left")
 
     tags[1].find_element(By.TAG_NAME, "input").send_keys(email)
@@ -52,6 +54,7 @@ def login_case(driver: webdriver.Chrome, email, password):
     
 def register_fail_case(driver: webdriver.Chrome):
     driver.get("http://localhost:5173/register")
+    time.sleep(0.5)
     time.sleep(0.5)
     driver.find_element(By.CLASS_NAME, "el-button").click()
     time.sleep(1)
@@ -88,14 +91,14 @@ def update_profile_case(driver: webdriver.Chrome, email, password):
 
 def chat_case(driver: webdriver.Chrome, email, password):
     login_case(driver, email, password)
-    time.sleep(3)
+    time.sleep(5)
     driver.find_element(By.CLASS_NAME, "container").click()
     time.sleep(0.5)
     message = f"Hello {random.randint(1, 100000)}"
     driver.find_element(By.TAG_NAME, "input").send_keys(message)
     time.sleep(0.5)
     driver.find_element(By.CLASS_NAME, "container__input-area__send-icon").click()
-    time.sleep(0.5)
+    time.sleep(2)
     tags = driver.find_elements(By.CLASS_NAME, "container-right-side")
     assert tags[-1].find_element(By.CLASS_NAME, "container__message").text == message
     return driver.current_url
