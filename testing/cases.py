@@ -102,3 +102,20 @@ def chat_case(driver: webdriver.Chrome, email, password):
     tags = driver.find_elements(By.CLASS_NAME, "container-right-side")
     assert tags[-1].find_element(By.CLASS_NAME, "container__message").text == message
     return driver.current_url
+
+def like_case(driver: webdriver.Chrome, email, password):
+    login_case(driver, email, password)
+    time.sleep(5)
+    driver.find_element(By.CSS_SELECTOR, "img[src='/src/assets/like.png']").click()
+    time.sleep(0.5)
+    return driver.current_url
+
+def upgrade_premium(driver: webdriver.Chrome, email, password):
+    login_case(driver, email, password)
+    time.sleep(6)
+    driver.find_element(By.CLASS_NAME, "material-symbols-rounded").click()
+    time.sleep(0.5)
+    tags = driver.find_elements(By.CLASS_NAME, "asterisk-left")
+    tags[8].find_element(By.TAG_NAME, "button").click()
+    time.sleep(2)
+    return driver.current_url

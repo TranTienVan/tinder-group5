@@ -51,3 +51,11 @@ def test_update_profile(driver: webdriver.Chrome):
 def test_chat_case(driver: webdriver.Chrome):
     result = chat_case(driver, 'abc@gmail.com', '123456')
     assert "/chat" in result
+
+def test_like_case(driver: webdriver.Chrome):
+    result = like_case(driver, 'shakira@gmail.com', '123')
+    assert "/match" in result
+
+def test_upgrade_preeium(driver: webdriver.Chrome):
+    result = upgrade_premium(driver, 'shakira@gmail.com', '123')
+    assert "/setting" in result
